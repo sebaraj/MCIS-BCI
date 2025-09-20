@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main]
 jobs:
-  build:
+  cmake-ninja-conan:
     runs-on: ubuntu-latest
     container:
       image: bryanwsebaraj/mcis-bci:latest
