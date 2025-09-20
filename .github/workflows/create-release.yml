@@ -89,17 +89,17 @@ jobs:
         run: |
           LATEST_TAG=${{ steps.versioning.outputs.latest_tag }}
 
-          if [ "$LATEST_TAG" == "0.0.0" ]; then
-            CHANGELOG=$(git log --pretty=format:"- %s by %an" | sed 's/^- Merge pull request #[0-9]* from .*//g' | sed '/^$/d')
-            CONTRIBUTORS=$(git log --pretty=format:"%an" | sort -u | grep -v "github-actions" | sed 's/^/@/g' | tr '\n' ' ')
-          else
-            CHANGELOG=$(git log $LATEST_TAG..HEAD --pretty=format:"- %s by %an" | sed 's/^- Merge pull request #[0-9]* from .*//g' | sed '/^$/d')
-            CONTRIBUTORS=$(git log $LATEST_TAG..HEAD --pretty=format:"%an" | sort -u | grep -v "github-actions" | sed 's/^/@/g' | tr '\n' ' ')
+          CHANGELOG_FORMAT=$(git log --pretty=format:"- %s (@%cn)" | sed 's/^- Merge pull request #[0-9]* from .*/- Merged PR by @&/g' | sed 's/^- Merged PR by @\(.*\)\/.*//g' | sed '/^$/d')
+          CONTRIBUTORS=$(git log --pretty=format:"@%cn" | sort -u | grep -v "github-actions" | tr '\n' ' ')
+
+          if [ "$LATEST_TAG" != "0.0.0" ]; then
+            CHANGELOG_FORMAT=$(git log $LATEST_TAG..HEAD --pretty=format:"- %s (@%cn)" | sed 's/^- Merge pull request #[0-9]* from .*/- Merged PR by @&/g' | sed 's/^- Merged PR by @\(.*\)\/.*//g' | sed '/^$/d')
+            CONTRIBUTORS=$(git log $LATEST_TAG..HEAD --pretty=format:"@%cn" | sort -u | grep -v "github-actions" | tr '\n' ' ')
           fi
 
           echo "changelog_body<<EOF" >> $GITHUB_OUTPUT
-          echo "## Changes" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "## What's Changed" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG_FORMAT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
           echo "contributors_list<<EOF" >> $GITHUB_OUTPUT
@@ -122,7 +122,5 @@ jobs:
           release_name: Release ${{ steps.versioning.outputs.new_version }}
           body: |
             ${{ steps.changelog.outputs.changelog_body }}
-
-            ${{ steps.changelog.outputs.contributors_list }}
           draft: false
           prerelease: ${{ steps.versioning.outputs.is_prerelease }}
