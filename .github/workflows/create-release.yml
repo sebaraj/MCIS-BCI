@@ -76,6 +76,7 @@ jobs:
           echo "Bumping version from $LATEST_VERSION to $NEW_VERSION"
 
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "latest_tag=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
           IS_PRERELEASE="false"
           if [[ "${{ github.event.inputs.prerelease-flag }}" == "true" || $MAJOR -eq 0 && $MINOR -eq 0 ]]; then
