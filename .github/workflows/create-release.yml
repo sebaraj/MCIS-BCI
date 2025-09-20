@@ -86,26 +86,59 @@ jobs:
 
       - name: Get changelog and contributors
         id: changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         run: |
           LATEST_TAG=${{ steps.versioning.outputs.latest_tag }}
 
-          CHANGELOG_FORMAT=$(git log --pretty=format:"- %s (@%cn)" | sed 's/^- Merge pull request #[0-9]* from .*/- Merged PR by @&/g' | sed 's/^- Merged PR by @\(.*\)\/.*//g' | sed '/^$/d')
-          CONTRIBUTORS=$(git log --pretty=format:"@%cn" | sort -u | grep -v "github-actions" | tr '\n' ' ')
-
-          if [ "$LATEST_TAG" != "0.0.0" ]; then
-            CHANGELOG_FORMAT=$(git log $LATEST_TAG..HEAD --pretty=format:"- %s (@%cn)" | sed 's/^- Merge pull request #[0-9]* from .*/- Merged PR by @&/g' | sed 's/^- Merged PR by @\(.*\)\/.*//g' | sed '/^$/d')
-            CONTRIBUTORS=$(git log $LATEST_TAG..HEAD --pretty=format:"@%cn" | sort -u | grep -v "github-actions" | tr '\n' ' ')
+          if [ "$LATEST_TAG" = "0.0.0" ]; then
+            RANGE="HEAD"
+            COMMITS=$(git rev-list --no-merges HEAD)
+          else
+            RANGE="$LATEST_TAG..HEAD"
+            COMMITS=$(git rev-list --no-merges "$RANGE")
           fi
 
-          echo "changelog_body<<EOF" >> $GITHUB_OUTPUT
-          echo "## What's Changed" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG_FORMAT" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          declare -A SEEN
+          CHANGELOG=""
+          for SHA in $COMMITS; do
+            TITLE=$(git log -1 --pretty=%s "$SHA")
 
-          echo "contributors_list<<EOF" >> $GITHUB_OUTPUT
-          echo "## Contributors" >> $GITHUB_OUTPUT
-          echo "$CONTRIBUTORS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+            LOGIN=$(gh api "repos/$REPO/commits/$SHA" --jq '.author.login // .committer.login // ""' || echo "")
+
+            if [ -z "$LOGIN" ]; then
+              PR_LOGIN=$(gh api -X GET "search/issues" -f q="repo:$REPO $SHA type:pr" --jq '.items[0].user.login // ""' || echo "")
+              LOGIN="$PR_LOGIN"
+            fi
+
+            if [ -z "$LOGIN" ]; then
+              LOGIN=$(git log -1 --pretty=%ae "$SHA")
+            fi
+
+            CHANGELOG+="- ${TITLE} (@${LOGIN})"$'\n'
+
+            SEEN["@${LOGIN}"]=1
+          done
+
+          CONTRIBUTORS=""
+          for k in "${!SEEN[@]}"; do
+            if [ "$k" != "@github-actions" ]; then
+              CONTRIBUTORS+="$k "
+            fi
+          done
+          CONTRIBUTORS=$(echo "$CONTRIBUTORS" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+
+          {
+            echo "changelog_body<<EOF"
+            echo "## Changes"
+            echo "$CHANGELOG"
+            echo "EOF"
+            echo "contributors_list<<EOF"
+            echo "## Contributors"
+            echo "$CONTRIBUTORS"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create Git tag
         run: |
