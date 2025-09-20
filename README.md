@@ -11,6 +11,7 @@ _Yale University • CPSC 4900_
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)\
 [![cpp-linter](https://github.com/sebaraj/MCIS-BCI/actions/workflows/cpp-linter.yml/badge.svg)](https://github.com/sebaraj/MCIS-BCI/actions/workflows/cpp-linter.yml)
 [![Build and Test](https://github.com/sebaraj/MCIS-BCI/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/sebaraj/MCIS-BCI/actions/workflows/build-and-test.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/sebaraj/MCIS-BCI?style=flat&logo=github)](https://github.com/sebaraj/MCIS-BCI/releases/latest)
 
 </div>
 
