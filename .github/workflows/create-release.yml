@@ -90,10 +90,10 @@ jobs:
 
           if [ "$LATEST_TAG" == "0.0.0" ]; then
             CHANGELOG=$(git log --pretty=format:"- %s by %an" | sed 's/^- Merge pull request #[0-9]* from .*//g' | sed '/^$/d')
-            CONTRIBUTORS=$(git log --pretty=format:"%an" | sort -u | grep -v "github-actions")
+            CONTRIBUTORS=$(git log --pretty=format:"%an" | sort -u | grep -v "github-actions" | sed 's/^/@/g' | tr '\n' ' ')
           else
             CHANGELOG=$(git log $LATEST_TAG..HEAD --pretty=format:"- %s by %an" | sed 's/^- Merge pull request #[0-9]* from .*//g' | sed '/^$/d')
-            CONTRIBUTORS=$(git log $LATEST_TAG..HEAD --pretty=format:"%an" | sort -u | grep -v "github-actions")
+            CONTRIBUTORS=$(git log $LATEST_TAG..HEAD --pretty=format:"%an" | sort -u | grep -v "github-actions" | sed 's/^/@/g' | tr '\n' ' ')
           fi
 
           echo "changelog_body<<EOF" >> $GITHUB_OUTPUT
