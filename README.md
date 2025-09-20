@@ -9,7 +9,6 @@ _Yale University • CPSC 4900_
 [![CMake](https://img.shields.io/badge/CMake-3.22+-green.svg?style=flat&logo=cmake)](https://cmake.org/)
 [![GTest](https://img.shields.io/badge/Testing-Google%20Test-red.svg?style=flat)](https://github.com/google/googletest)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)\
-[![cpp-linter](https://github.com/cpp-linter/cpp-linter-action/actions/workflows/cpp-linter.yml/badge.svg)](https://github.com/sebaraj/MCIS-BCI/actions/workflows/cpp-linter.yml)
 [![cpp-linter](https://github.com/sebaraj/MCIS-BCI/actions/workflows/cpp-linter.yml/badge.svg)](https://github.com/sebaraj/MCIS-BCI/actions/workflows/cpp-linter.yml)
 [![Build and Test](https://github.com/sebaraj/MCIS-BCI/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/sebaraj/MCIS-BCI/actions/workflows/build-and-test.yml)
 
@@ -174,8 +173,7 @@ ctest -R BenchmarkTest
 # Run a specific test executable directly
 ctest -R MVMTest.MVM2x2GraphCreation --verbose
 
-# Test and generate a png of the generated CDAG
-# Currently only works for MVM, DWT, and FFT tests
+# Test and generate a png of the generated CDAG for all non-NodeTests
 # dot (.gv) files are saved in the `./dot/` directory
 # diagrams (.png) files are saved in the `./diagrams/` directory
 GENERATE_DIAGRAMS=1 ctest -R MVMTest -R MVMTest.MVM2x2GraphCreation

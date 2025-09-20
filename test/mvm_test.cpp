@@ -25,10 +25,7 @@ TEST_F(MVMTest, MVM2x2GraphCreation) {
 
     std::cout << "MVM(2,2) created with " << mvm_graph.get_num_nodes() << " nodes\n";
 
-    if (generate_diagrams) {
-        mvm_graph.generate_diagram_file("mvm_2x2");
-        std::cout << "Generated mvm_2x2.gv and mvm_2x2.png\n";
-    }
+    if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_2x2");
 }
 
 // Test 2: Create MVM(3,2) graph matching Figure 4(a)
@@ -41,10 +38,7 @@ TEST_F(MVMTest, MVM3x2GraphCreation) {
 
     std::cout << "MVM(3,2) created with " << mvm_graph.get_num_nodes() << " nodes\n";
 
-    if (generate_diagrams) {
-        mvm_graph.generate_diagram_file("mvm_3x2");
-        std::cout << "Generated mvm_3x2.gv and mvm_3x2.png\n";
-    }
+    if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_3x2");
 }
 
 // Test 3: Create MVM(2,3) graph matching Figure 4(b)
@@ -57,10 +51,7 @@ TEST_F(MVMTest, MVM2x3GraphCreation) {
 
     std::cout << "MVM(2,3) created with " << mvm_graph.get_num_nodes() << " nodes\n";
 
-    if (generate_diagrams) {
-        mvm_graph.generate_diagram_file("mvm_2x3");
-        std::cout << "Generated mvm_2x3.gv and mvm_2x3.png\n";
-    }
+    if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_2x3");
 }
 
 // Test 4: Test MVM graph creation from dimensions
@@ -70,10 +61,7 @@ TEST_F(MVMTest, MVMFromDimensionsCreation) {
     std::cout << "MVM from dimensions (2,3) created with " << mvm_graph.get_num_nodes()
               << " nodes\n";
 
-    if (generate_diagrams) {
-        mvm_graph.generate_diagram_file("mvm_dimensions_2x3");
-        std::cout << "Generated mvm_dimensions_2x3.gv and mvm_dimensions_2x3.png\n";
-    }
+    if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_dimensions_2x3");
 }
 
 // Test 5: Test edge cases
@@ -82,6 +70,7 @@ TEST_F(MVMTest, MVMGraphEdgeCases) {
     std::vector<std::string> empty_vec;
     Graph empty_graph = Graph::create_mvm_graph_from_mat_vec(empty_mat, empty_vec);
     std::cout << "Empty graph created with " << empty_graph.get_num_nodes() << " nodes\n";
+    if (generate_diagrams) empty_graph.generate_diagram_file("mvm_empty");
 }
 
 // Test 6: Test larger MVM graph (4x4)
@@ -90,10 +79,7 @@ TEST_F(MVMTest, MVM4x4LargeGraphCreation) {
 
     std::cout << "MVM(4,4) created with " << mvm_graph.get_num_nodes() << " nodes\n";
 
-    if (generate_diagrams) {
-        mvm_graph.generate_diagram_file("mvm_4x4");
-        std::cout << "Generated mvm_4x4.gv and mvm_4x4.png\n";
-    }
+    if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_4x4");
 }
 
 // Test 7: Test connectivity with named elements
@@ -105,8 +91,5 @@ TEST_F(MVMTest, MVMEdgeConnectivityVerification) {
 
     std::cout << "MVM with named elements created with " << mvm_graph.get_num_nodes() << " nodes\n";
 
-    if (generate_diagrams) {
-        mvm_graph.generate_diagram_file("mvm_connectivity_test");
-        std::cout << "Generated mvm_connectivity_test.gv and mvm_connectivity_test.png\n";
-    }
+    if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_connectivity_test");
 }
