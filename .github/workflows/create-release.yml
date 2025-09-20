@@ -29,6 +29,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Set up Git
         run: |
@@ -81,6 +83,29 @@ jobs:
           fi
           echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
 
+      - name: Get changelog and contributors
+        id: changelog
+        run: |
+          LATEST_TAG=${{ steps.versioning.outputs.latest_tag }}
+
+          if [ "$LATEST_TAG" == "0.0.0" ]; then
+            CHANGELOG=$(git log --pretty=format:"- %s by %an" | sed 's/^- Merge pull request #[0-9]* from .*//g' | sed '/^$/d')
+            CONTRIBUTORS=$(git log --pretty=format:"%an" | sort -u | grep -v "github-actions")
+          else
+            CHANGELOG=$(git log $LATEST_TAG..HEAD --pretty=format:"- %s by %an" | sed 's/^- Merge pull request #[0-9]* from .*//g' | sed '/^$/d')
+            CONTRIBUTORS=$(git log $LATEST_TAG..HEAD --pretty=format:"%an" | sort -u | grep -v "github-actions")
+          fi
+
+          echo "changelog_body<<EOF" >> $GITHUB_OUTPUT
+          echo "## Changes" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "contributors_list<<EOF" >> $GITHUB_OUTPUT
+          echo "## Contributors" >> $GITHUB_OUTPUT
+          echo "$CONTRIBUTORS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create Git tag
         run: |
           NEW_VERSION=${{ steps.versioning.outputs.new_version }}
@@ -95,8 +120,8 @@ jobs:
           tag_name: ${{ steps.versioning.outputs.new_version }}
           release_name: Release ${{ steps.versioning.outputs.new_version }}
           body: |
-            # Release ${{ steps.versioning.outputs.new_version }}
+            ${{ steps.changelog.outputs.changelog_body }}
 
-            This is an automatic release created by GitHub Actions.
+            ${{ steps.changelog.outputs.contributors_list }}
           draft: false
           prerelease: ${{ steps.versioning.outputs.is_prerelease }}
