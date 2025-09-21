@@ -40,6 +40,13 @@ std::vector<Graph*> MCISAlgorithm::run(const Graph& g1, const Graph& g2,
     return {};
 }
 
+template <typename T>
+    requires std::is_base_of_v<MCISFinder, T>
+std::vector<Graph*> MCISAlgorithm::run(const Graph& g1, const Graph& g2,
+                                       T* algorithm) {
+    return algorithm->find(g1, g2);
+}
+
 std::vector<std::vector<Graph*>> MCISAlgorithm::run_many(
     const Graph& g1, const Graph& g2, std::vector<AlgorithmType> types) {
     std::vector<std::vector<Graph*>> results;

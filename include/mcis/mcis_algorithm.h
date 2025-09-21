@@ -70,9 +70,7 @@ class MCISAlgorithm {
      */
     template <typename T>
         requires std::is_base_of_v<MCISFinder, T>
-    std::vector<Graph*> run(const Graph& g1, const Graph& g2, T* algorithm) {
-        return algorithm->find_mcis(g1, g2);
-    }
+    std::vector<Graph*> run(const Graph& g1, const Graph& g2, T* algorithm);
 
     /**
      * @brief Runs multiple specified MCIS algorithms on two input graphs.
