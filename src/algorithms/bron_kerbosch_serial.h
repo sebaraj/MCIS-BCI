@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file bron_kerbosch_serial.h
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -9,8 +9,8 @@
  * This software is licensed under the MIT License.
  */
 
-#ifndef BRON_KERBOSCH_SERIAL_H
-#define BRON_KERBOSCH_SERIAL_H
+#ifndef SRC_ALGORITHMS_BRON_KERBOSCH_SERIAL_H_
+#define SRC_ALGORITHMS_BRON_KERBOSCH_SERIAL_H_
 
 #include <vector>
 
@@ -28,4 +28,4 @@ class BronKerboschSerial : public MCISFinder {
     std::vector<Graph*> find(const Graph& g1, const Graph& g2) override;
 };
 
-#endif  // BRON_KERBOSCH_SERIAL_H
+#endif  // SRC_ALGORITHMS_BRON_KERBOSCH_SERIAL_H_

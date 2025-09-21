@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file time.h
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -8,8 +8,8 @@
  *
  * This software is licensed under the MIT License.
  */
-#ifndef TIME_H
-#define TIME_H
+#ifndef SRC_GRAPH_TIME_H_
+#define SRC_GRAPH_TIME_H_
 
 #include <time.h>
 
@@ -17,4 +17,4 @@
 
 const std::string currentDateTime();
 
-#endif  // TIME_H
+#endif  // SRC_GRAPH_TIME_H_

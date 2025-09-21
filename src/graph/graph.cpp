@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file graph.cpp
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -10,7 +10,16 @@
  */
 #include <mcis/graph.h>
 
-#include "time.h"
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+
+#include "./time.h"
 
 Graph::Graph() = default;
 

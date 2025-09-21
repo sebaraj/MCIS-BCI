@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file mcis_algorithm.cpp
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -12,8 +12,9 @@
 #include "mcis/mcis_algorithm.h"
 
 #include <iostream>
+#include <vector>
 
-#include "bron_kerbosch_serial.h"
+#include "./bron_kerbosch_serial.h"
 
 MCISAlgorithm::MCISAlgorithm() {
     algorithms.push_back(new BronKerboschSerial());

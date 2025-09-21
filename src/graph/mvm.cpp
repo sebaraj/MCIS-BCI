@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file mvm.cpp
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -41,10 +41,10 @@ Graph Graph::create_mvm_graph_from_mat_vec(
         graph.add_node(product_node);
     }
 
-    for (int set = 3; set <= n + 1; ++set) {
+    for (int depth = 3; depth <= n + 1; ++depth) {
         for (int i = 1; i <= m; ++i) {
             std::string acc_node
-                = "v^" + std::to_string(set) + "_" + std::to_string(i);
+                = "v^" + std::to_string(depth) + "_" + std::to_string(i);
             graph.add_node(acc_node);
         }
     }
