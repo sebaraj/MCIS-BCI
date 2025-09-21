@@ -10,6 +10,8 @@
  */
 #include <cstdlib>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "gtest/gtest.h"
 #include "mcis/graph.h"

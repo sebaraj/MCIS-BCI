@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file mcis_finder.h
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -9,8 +9,8 @@
  * This software is licensed under the MIT License.
  */
 
-#ifndef MCIS_FINDER_H
-#define MCIS_FINDER_H
+#ifndef INCLUDE_MCIS_MCIS_FINDER_H_
+#define INCLUDE_MCIS_MCIS_FINDER_H_
 
 #include <vector>
 
@@ -24,8 +24,19 @@
  */
 class MCISFinder {
  public:
+    /**
+     * Pure virtual function to find the MCIS between two graphs.
+     * @param g1 The first graph.
+     * @param g2 The second graph.
+     * @return A vector of pointers to Graph objects representing the MCIS
+     * found.
+     */
     virtual std::vector<Graph*> find(const Graph& g1, const Graph& g2) = 0;
+
+    /**
+     * Virtual destructor.
+     */
     virtual ~MCISFinder() {}
 };
 
-#endif  // MCIS_FINDER_H
+#endif  // INCLUDE_MCIS_MCIS_FINDER_H_

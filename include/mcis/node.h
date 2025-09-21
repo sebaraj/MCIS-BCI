@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file node.h
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -9,8 +9,8 @@
  * This software is licensed under the MIT License.
  */
 
-#ifndef NODE_H
-#define NODE_H
+#ifndef INCLUDE_MCIS_NODE_H_
+#define INCLUDE_MCIS_NODE_H_
 
 #include <iostream>
 #include <string>
@@ -50,7 +50,7 @@ class Node {
      * counts.
      * @param id Unique identifier for the node.
      */
-    Node(const std::string& id);
+    explicit Node(const std::string& id);
 
     /**
      * @brief Copy constructor.
@@ -191,4 +191,4 @@ class Node {
     void print_full() const;
 };
 
-#endif  // NODE_H
+#endif  // INCLUDE_MCIS_NODE_H_

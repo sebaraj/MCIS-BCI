@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file time.cpp
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -10,13 +10,14 @@
  */
 #include "time.h"
 
+#include <ctime>
 #include <string>
 
 const std::string currentDateTime() {
-    time_t now = time(0);
+    const time_t now = time(0);
     struct tm tstruct;
     char buf[80];
-    tstruct = *localtime(&now);
+    localtime_r(&now, &tstruct);
     strftime(buf, sizeof(buf), "%Y-%m-%d-%X", &tstruct);
 
     return buf;

@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file graph.cpp
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -10,7 +10,16 @@
  */
 #include <mcis/graph.h>
 
-#include "time.h"
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+
+#include "./time.h"
 
 Graph::Graph() = default;
 
@@ -313,6 +322,19 @@ void Graph::generate_diagram_file(const std::string& graph_name) const {
     outputFile << "digraph G {\n";
     if (!is_weighted) {
         for (const auto& [_, node] : nodes) {
+            std::string node_id = node->get_id();
+            size_t super_pos = node_id.find('^');
+            size_t sub_pos = node_id.find('_');
+
+            if (node_id.find('^') != std::string::npos
+                || node_id.find('_') != std::string::npos) {
+                outputFile << "    " << std::quoted(node->get_id())
+                           << " [label=<v<SUB>" << node_id.substr(sub_pos + 1)
+                           << "</SUB><SUP>"
+                           << node_id.substr(super_pos + 1,
+                                             sub_pos - super_pos - 1)
+                           << "</SUP>>];\n";
+            }
             for (const auto& [child, weight] : node->get_children()) {
                 outputFile << "    " << std::quoted(node->get_id()) << " -> "
                            << std::quoted(child->get_id()) << ";\n";

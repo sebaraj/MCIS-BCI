@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file graph.h
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
@@ -9,22 +9,14 @@
  * This software is licensed under the MIT License.
  */
 
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef INCLUDE_MCIS_GRAPH_H_
+#define INCLUDE_MCIS_GRAPH_H_
 
-#include <omp.h>
-
-#include <cstddef>
-#include <cstdlib>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
 #include <string>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
-#include "node.h"
+#include "mcis/node.h"
 
 constexpr int MVM_PARALLEL_THRESHOLD = 100;
 
@@ -68,7 +60,7 @@ class Graph {
      * @brief Constructs a graph from a list of nodes.
      * @param node_list Vector of Node objects to initialize the graph with.
      */
-    Graph(const std::vector<Node>& node_list);
+    explicit Graph(const std::vector<Node>& node_list);
 
     /**
      * @brief Copy constructor.
@@ -275,4 +267,4 @@ class Graph {
     static Graph create_mvm_graph_from_dimensions(int m, int n);
 };
 
-#endif  // GRAPH_H
+#endif  // INCLUDE_MCIS_GRAPH_H_

@@ -12,8 +12,9 @@
 
 #include <algorithm>
 #include <memory>
-#include <sstream>
-#include <unordered_set>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "gtest/gtest.h"
 #include "mcis/node.h"
