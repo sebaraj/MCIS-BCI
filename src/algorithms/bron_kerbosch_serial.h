@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "mcis/graph.h"
-#include "mcis_finder.h"
+#include "mcis/mcis_finder.h"
 
 /**
  * @class BronKerboschSerial

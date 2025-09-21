@@ -10,8 +10,8 @@
 
 #include <vector>
 
-#include "../src/algorithms/mcis_finder.h"
 #include "graph.h"
+#include "mcis_finder.h"
 
 /**
  * @enum AlgorithmType
@@ -51,6 +51,20 @@ public:
      * @return A vector of pointers to Graph objects representing the found MCIS results.
      */
     std::vector<Graph*> run(const Graph& g1, const Graph& g2, AlgorithmType type);
+
+    /**
+     * @brief Runs a user-specified MCIS algorithm on two input graphs.
+     * @tparam T Type of the MCIS algorithm, must derive from MCISFinder.
+     * @param g1 The first input graph.
+     * @param g2 The second input graph.
+     * @param algorithm Pointer to the user-specified algorithm instance.
+     * @return A vector of pointers to Graph objects representing the found MCIS results.
+     */
+    template <typename T>
+        requires std::is_base_of_v<MCISFinder, T>
+    std::vector<Graph*> run(const Graph& g1, const Graph& g2, T* algorithm) {
+        return algorithm->find_mcis(g1, g2);
+    }
 
     /**
      * @brief Runs multiple specified MCIS algorithms on two input graphs.

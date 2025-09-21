@@ -17,5 +17,3 @@ WORKDIR /workspace
 
 COPY . /workspace
 
-CMD mkdir -p build
-

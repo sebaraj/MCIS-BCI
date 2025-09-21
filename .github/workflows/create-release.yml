@@ -79,9 +79,6 @@ jobs:
           echo "latest_tag=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
           IS_PRERELEASE="false"
-          if [[ "${{ github.event.inputs.prerelease-flag }}" == "true" || $MAJOR -eq 0 && $MINOR -eq 0 ]]; then
-            IS_PRERELEASE="true"
-          fi
           echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
 
       - name: Get changelog and contributors

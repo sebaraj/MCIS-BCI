@@ -245,7 +245,8 @@ public:
      */
     [[nodiscard]]
     static Graph create_mvm_graph_from_mat_vec(const std::vector<std::vector<std::string>>& mat,
-                                               const std::vector<std::string>& vec);
+                                               const std::vector<std::string>& vec,
+                                               bool from_dimensions = false);
 
     /**
      * @brief Static factory method for MVM dataflow CDAG creation from matrix dimensions
