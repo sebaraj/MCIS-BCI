@@ -3,6 +3,10 @@
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
  */
 
 #ifndef GRAPH_H
@@ -27,10 +31,11 @@ constexpr int MVM_PARALLEL_THRESHOLD = 100;
 /**
  * @class Graph
  * @brief Represents a directed graph using an adjacency list.
- * This class provides methods to manage nodes and edges, and to check if the graph is a DAG.
+ * This class provides methods to manage nodes and edges, and to check if the
+ * graph is a DAG.
  */
 class Graph {
-private:
+ private:
     /**
      * @brief Map of node IDs to Node pointers representing the graph's nodes.
      */
@@ -53,7 +58,7 @@ private:
      */
     bool is_weighted = false;
 
-public:
+ public:
     /**
      * @brief Default constructor that initializes an empty graph.
      */
@@ -110,53 +115,59 @@ public:
     /**
      * @brief Adds a node with the given ID to the graph.
      * @param id Unique identifier for the new node.
-     * @return True if the node was added successfully, false if a node with the same ID already
-     * exists.
+     * @return True if the node was added successfully, false if a node with the
+     * same ID already exists.
      */
     bool add_node(const std::string& id);
 
     /**
      * @brief Adds multiple nodes with the given IDs to the graph.
      * @param ids Vector of unique identifiers for the new nodes.
-     * @return True if all nodes were added successfully, false if any node with the same ID already
-     * exists.
+     * @return True if all nodes were added successfully, false if any node with
+     * the same ID already exists.
      */
     bool add_node_set(const std::vector<std::string>& ids);
 
     /**
      * @brief Removes the node with the given ID from the graph.
      * @param id Unique identifier of the node to remove.
-     * @return True if the node was removed successfully, false if the node does not exist.
+     * @return True if the node was removed successfully, false if the node does
+     * not exist.
      */
     bool remove_node(const std::string& id);
 
     /**
-     * @brief Adds a directed edge from one node to another with a specified weight.
+     * @brief Adds a directed edge from one node to another with a specified
+     * weight.
      * @param from_id ID of the source node.
      * @param to_id ID of the destination node.
      * @param weight Weight of the edge.
-     * @return True if the edge was added successfully, false if either node does not exist or the
-     * edge already exists.
+     * @return True if the edge was added successfully, false if either node
+     * does not exist or the edge already exists.
      */
-    bool add_edge(const std::string& from_id, const std::string& to_id, int weight);
+    bool add_edge(const std::string& from_id, const std::string& to_id,
+                  int weight);
 
     /**
-     * @brief Adds directed edges from one node to multiple other nodes with a specified weight.
+     * @brief Adds directed edges from one node to multiple other nodes with a
+     * specified weight.
      * @param from_id ID of the source node.
      * @param to_ids Vector of IDs of the children nodes.
-     * @param weights Vector of weights of the edges, defaults to 0 if vector is empty.
-     * @return True if all edges were added successfully, false if the source node does not exist or
-     * any edge already exists.
+     * @param weights Vector of weights of the edges, defaults to 0 if vector is
+     * empty.
+     * @return True if all edges were added successfully, false if the source
+     * node does not exist or any edge already exists.
      */
-    bool add_edge_set(const std::string& from_id, const std::vector<std::string>& to_ids,
+    bool add_edge_set(const std::string& from_id,
+                      const std::vector<std::string>& to_ids,
                       const std::vector<int>& weights = {});
 
     /**
      * @brief Removes the directed edge from one node to another.
      * @param from_id ID of the source node.
      * @param to_id ID of the destination node.
-     * @return True if the edge was removed successfully, false if either node does not exist or the
-     * edge does not exist.
+     * @return True if the edge was removed successfully, false if either node
+     * does not exist or the edge does not exist.
      */
     bool remove_edge(const std::string& from_id, const std::string& to_id);
 
@@ -165,10 +176,11 @@ public:
      * @param from_id ID of the source node.
      * @param to_id ID of the destination node.
      * @param new_weight New weight for the edge.
-     * @return True if the weight was changed successfully, false if either node does not exist or
-     * the edge does not exist.
+     * @return True if the weight was changed successfully, false if either node
+     * does not exist or the edge does not exist.
      */
-    bool change_edge_weight(const std::string& from_id, const std::string& to_id, int new_weight);
+    bool change_edge_weight(const std::string& from_id,
+                            const std::string& to_id, int new_weight);
 
     /**
      * @brief Retrieves the node identified by the given ID
@@ -186,7 +198,8 @@ public:
 
     /**
      * @brief Retrieves the map of nodes in the graph.
-     * @return Constant reference to the unordered map of node IDs to Node pointers.
+     * @return Constant reference to the unordered map of node IDs to Node
+     * pointers.
      */
     [[nodiscard]]
     const std::unordered_map<std::string, Node*>& get_nodes() const;
@@ -223,13 +236,15 @@ public:
     int remove_nodes_bulk(const std::vector<std::string>& node_ids);
 
     /**
-     * @brief Reserves memory for expected number of nodes to reduce allocations.
+     * @brief Reserves memory for expected number of nodes to reduce
+     * allocations.
      * @param expected_size Expected number of nodes.
      */
     void reserve_nodes(size_t expected_size);
 
     /**
-     * @brief Gets the current version/revision of the graph for change tracking.
+     * @brief Gets the current version/revision of the graph for change
+     * tracking.
      * @return Current version number.
      */
     [[nodiscard]]
@@ -238,18 +253,20 @@ public:
     }
 
     /**
-     * @brief Static factory method for MVM dataflow CDAG creation from actual matrix and vector
+     * @brief Static factory method for MVM dataflow CDAG creation from actual
+     * matrix and vector
      * @param mat 2D vector representing the matrix
      * @param vec 1D vector representing the vector
      * @return Graph representing the MVM dataflow CDAG
      */
     [[nodiscard]]
-    static Graph create_mvm_graph_from_mat_vec(const std::vector<std::vector<std::string>>& mat,
-                                               const std::vector<std::string>& vec,
-                                               bool from_dimensions = false);
+    static Graph create_mvm_graph_from_mat_vec(
+        const std::vector<std::vector<std::string>>& mat,
+        const std::vector<std::string>& vec, bool from_dimensions = false);
 
     /**
-     * @brief Static factory method for MVM dataflow CDAG creation from matrix dimensions
+     * @brief Static factory method for MVM dataflow CDAG creation from matrix
+     * dimensions
      * @param m Number of rows in the matrix
      * @param n Number of columns in the matrix
      * @return Graph representing the MVM dataflow CDAG

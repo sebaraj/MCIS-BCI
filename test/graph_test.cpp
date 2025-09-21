@@ -1,3 +1,13 @@
+/**
+ * @file
+ * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
+ * @version 1.0
+ * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
+ */
 #include "mcis/graph.h"
 
 #include <algorithm>
@@ -9,11 +19,12 @@
 #include "mcis/node.h"
 
 class GraphTest : public ::testing::Test {
-protected:
+ protected:
     void SetUp() override {
         graph = std::make_unique<Graph>();
-        generate_diagrams = std::getenv("GENERATE_DIAGRAMS") != nullptr
-                            && std::string(std::getenv("GENERATE_DIAGRAMS")) == "1";
+        generate_diagrams
+            = std::getenv("GENERATE_DIAGRAMS") != nullptr
+              && std::string(std::getenv("GENERATE_DIAGRAMS")) == "1";
     }
 
     void TearDown() override { graph.reset(); }
@@ -43,7 +54,8 @@ TEST_F(GraphTest, VectorConstructor) {
     EXPECT_NE(graph_from_vector.get_node("B"), nullptr);
     EXPECT_NE(graph_from_vector.get_node("C"), nullptr);
     EXPECT_EQ(graph_from_vector.get_node("D"), nullptr);
-    if (generate_diagrams) graph->generate_diagram_file("graph_vector_constructor");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_vector_constructor");
 }
 
 // Test 3: Validates copy constructor behavior with empty graph
@@ -71,11 +83,14 @@ TEST_F(GraphTest, CopyConstructorPopulated) {
     graph->add_node("D");
     EXPECT_NE(copied_graph.get_num_nodes(), graph->get_num_nodes());
     EXPECT_FALSE(*graph == copied_graph);
-    if (generate_diagrams) graph->generate_diagram_file("graph_copy_constructor_original");
-    if (generate_diagrams) copied_graph.generate_diagram_file("graph_copy_constructor_copy");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_copy_constructor_original");
+    if (generate_diagrams)
+        copied_graph.generate_diagram_file("graph_copy_constructor_copy");
 }
 
-// Test 5: Tests copy assignment operator handles existing state and self-assignment
+// Test 5: Tests copy assignment operator handles existing state and
+// self-assignment
 TEST_F(GraphTest, CopyAssignmentOperator) {
     graph->add_node("A");
     graph->add_node("B");
@@ -91,8 +106,10 @@ TEST_F(GraphTest, CopyAssignmentOperator) {
     EXPECT_EQ(assigned_graph.get_node("X"), nullptr);
 
     EXPECT_EQ(assigned_graph.get_num_nodes(), 2);
-    if (generate_diagrams) graph->generate_diagram_file("graph_assign_constructor_original");
-    if (generate_diagrams) assigned_graph.generate_diagram_file("graph_assign_constructor_copy");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_assign_constructor_original");
+    if (generate_diagrams)
+        assigned_graph.generate_diagram_file("graph_assign_constructor_copy");
 }
 
 // Test 6: Verifies move constructor transfers resources and empties source
@@ -110,8 +127,10 @@ TEST_F(GraphTest, MoveConstructor) {
     EXPECT_NE(moved_graph.get_node("A"), nullptr);
     EXPECT_NE(moved_graph.get_node("B"), nullptr);
     EXPECT_EQ(graph->get_node("A"), nullptr);
-    if (generate_diagrams) graph->generate_diagram_file("graph_move_constructor_original");
-    if (generate_diagrams) moved_graph.generate_diagram_file("graph_move_constructor_move");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_move_constructor_original");
+    if (generate_diagrams)
+        moved_graph.generate_diagram_file("graph_move_constructor_move");
 }
 
 // Test 7: Tests move assignment operator resource transfer and cleanup
@@ -129,9 +148,11 @@ TEST_F(GraphTest, MoveAssignmentOperator) {
     EXPECT_EQ(graph->get_num_nodes(), 0);
     EXPECT_NE(assigned_graph.get_node("A"), nullptr);
     EXPECT_EQ(assigned_graph.get_node("Y"), nullptr);
-    if (generate_diagrams) graph->generate_diagram_file("graph_move_assign_constructor_original");
     if (generate_diagrams)
-        assigned_graph.generate_diagram_file("graph_move_assign_constructor_moved");
+        graph->generate_diagram_file("graph_move_assign_constructor_original");
+    if (generate_diagrams)
+        assigned_graph.generate_diagram_file(
+            "graph_move_assign_constructor_moved");
 }
 
 // Test 8: Validates successful addition of single nodes including edge cases
@@ -148,7 +169,8 @@ TEST_F(GraphTest, AddSingleNodeSuccess) {
 
     EXPECT_TRUE(graph->add_node("Node@#$%"));
     EXPECT_NE(graph->get_node("Node@#$%"), nullptr);
-    if (generate_diagrams) graph->generate_diagram_file("graph_add_single_node_success");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_add_single_node_success");
 }
 
 // Test 9: Tests node addition rejection for duplicate IDs
@@ -174,7 +196,8 @@ TEST_F(GraphTest, AddMultipleNodes) {
     EXPECT_EQ(graph->get_num_nodes(), 7);
     EXPECT_NE(graph->get_node("F"), nullptr);
     EXPECT_NE(graph->get_node("G"), nullptr);
-    if (generate_diagrams) graph->generate_diagram_file("graph_add_multiple_nodes");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_add_multiple_nodes");
 }
 
 // Test 11: Validates node removal and automatic edge cleanup
@@ -193,7 +216,8 @@ TEST_F(GraphTest, RemoveNodeSuccess) {
     Node* nodeC = graph->get_node("C");
     EXPECT_EQ(nodeA->get_num_children(), 0);
     EXPECT_EQ(nodeC->get_num_parents(), 0);
-    if (generate_diagrams) graph->generate_diagram_file("graph_remove_node_success");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_remove_node_success");
 }
 
 // Test 12: Tests node removal rejection for non-existent nodes
@@ -203,7 +227,8 @@ TEST_F(GraphTest, RemoveNodeFailure) {
     graph->add_node("A");
     EXPECT_TRUE(graph->remove_node("A"));
     EXPECT_FALSE(graph->remove_node("A"));
-    if (generate_diagrams) graph->generate_diagram_file("graph_remove_node_failure");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_remove_node_failure");
 }
 
 // Test 13: Verifies successful edge addition and parent/child count updates
@@ -225,7 +250,8 @@ TEST_F(GraphTest, AddEdgeSuccess) {
     EXPECT_TRUE(nodeB->contains_edge(nodeC));
     EXPECT_EQ(nodeB->get_num_parents(), 1);
     EXPECT_EQ(nodeC->get_num_parents(), 2);
-    if (generate_diagrams) graph->generate_diagram_file("graph_add_edge_success");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_add_edge_success");
 }
 
 // Test 14: Tests edge addition rejection for non-existent nodes and conflicts
@@ -242,7 +268,8 @@ TEST_F(GraphTest, AddEdgeFailure) {
     EXPECT_TRUE(graph->add_edge("A", "B", 10));
 
     EXPECT_FALSE(graph->add_edge("A", "B", 20));
-    if (generate_diagrams) graph->generate_diagram_file("graph_add_edge_failure");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_add_edge_failure");
 }
 
 // Test 15: Tests batch edge addition with explicit and default weights
@@ -270,7 +297,8 @@ TEST_F(GraphTest, AddMultipleEdges) {
     const auto& children = nodeB->get_children();
     EXPECT_EQ(children.at(graph->get_node("E")), 0);
     EXPECT_EQ(children.at(graph->get_node("F")), 0);
-    if (generate_diagrams) graph->generate_diagram_file("graph_add_multiple_edges");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_add_multiple_edges");
 }
 
 // Test 16: Validates edge removal and parent/child count updates
@@ -313,7 +341,8 @@ TEST_F(GraphTest, ChangeEdgeWeight) {
     EXPECT_FALSE(graph->change_edge_weight("B", "A", 100));
 
     EXPECT_FALSE(graph->change_edge_weight("X", "Y", 100));
-    if (generate_diagrams) graph->generate_diagram_file("graph_change_edge_weight");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_change_edge_weight");
 }
 
 // Test 18: Confirms DAG detection for various valid acyclic graph structures
@@ -334,7 +363,8 @@ TEST_F(GraphTest, DAGDetectionValid) {
     graph->add_edge("A", "D", 1);
     graph->add_edge("A", "E", 1);
     EXPECT_TRUE(graph->is_dag());
-    if (generate_diagrams) graph->generate_diagram_file("graph_dag_detection_valid");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_dag_detection_valid");
 }
 
 // Test 19: Tests cycle detection and DAG validation after cycle removal
@@ -354,7 +384,8 @@ TEST_F(GraphTest, DAGDetectionCycles) {
 
     EXPECT_FALSE(graph->add_edge("B", "B", 1));
     EXPECT_TRUE(graph->is_dag());
-    if (generate_diagrams) graph->generate_diagram_file("graph_dag_detection_cycles");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_dag_detection_cycles");
 }
 
 // Test 20: Stress tests graph operations with large hierarchical structure
@@ -372,8 +403,8 @@ TEST_F(GraphTest, ComplexGraphOperationsAndStressTesting) {
 
     for (int i = 0; i < num_nodes - 1; ++i) {
         for (int j = i + 1; j < std::min(i + 5, num_nodes); ++j) {
-            EXPECT_TRUE(
-                graph->add_edge("Node" + std::to_string(i), "Node" + std::to_string(j), i + j));
+            EXPECT_TRUE(graph->add_edge("Node" + std::to_string(i),
+                                        "Node" + std::to_string(j), i + j));
         }
     }
 
@@ -398,5 +429,6 @@ TEST_F(GraphTest, ComplexGraphOperationsAndStressTesting) {
             EXPECT_NE(graph->get_node(child->get_id()), nullptr);
         }
     }
-    if (generate_diagrams) graph->generate_diagram_file("graph_complex_operations");
+    if (generate_diagrams)
+        graph->generate_diagram_file("graph_complex_operations");
 }

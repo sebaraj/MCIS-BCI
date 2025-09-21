@@ -1,16 +1,31 @@
+/**
+ * @file
+ * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
+ * @version 1.0
+ * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
+ */
 #include <mcis/node.h>
 
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
-Node::Node(const std::string& id) : id(std::move(id)), num_parents(0), num_children(0) {};
+Node::Node(const std::string& id)
+    : id(std::move(id)), num_parents(0), num_children(0) {}
 
 Node::Node(const Node& other)
     : id(other.id),
       num_parents(other.num_parents),
       num_children(other.num_children),
-      children(other.children) {};
+      children(other.children) {}
 
 Node& Node::operator=(const Node& other) {
     if (this != &other) {
@@ -82,15 +97,17 @@ bool Node::change_edge_weight(Node* neighbor, int new_weight) {
     return true;
 }
 
-bool Node::contains_edge(Node* neighbor) const { return children.find(neighbor) != children.end(); }
+bool Node::contains_edge(Node* neighbor) const {
+    return children.find(neighbor) != children.end();
+}
 
 bool Node::is_source() const { return num_parents == 0; }
 
 bool Node::is_sink() const { return num_children == 0; }
 
 bool Node::operator==(const Node& other) const {
-    bool same
-        = num_parents == other.num_parents && id == other.id && num_children == other.num_children;
+    bool same = num_parents == other.num_parents && id == other.id
+                && num_children == other.num_children;
 
     for (const auto& [child, weight] : children) {
         auto it = other.children.find(child);
@@ -103,7 +120,9 @@ bool Node::operator==(const Node& other) const {
 
 bool Node::same_id(const Node& other) const { return id == other.id; }
 
-const std::unordered_map<Node*, int>& Node::get_children() const { return children; }
+const std::unordered_map<Node*, int>& Node::get_children() const {
+    return children;
+}
 
 std::ostream& operator<<(std::ostream& os, const Node& node) {
     os << node.id << " -> { ";
@@ -112,7 +131,8 @@ std::ostream& operator<<(std::ostream& os, const Node& node) {
     for (const auto& [key, _] : node.children) {
         keys[idx++] = key;
     }
-    std::sort(keys.begin(), keys.end(), [](Node* a, Node* b) { return a->id < b->id; });
+    std::sort(keys.begin(), keys.end(),
+              [](Node* a, Node* b) { return a->id < b->id; });
     for (const auto key : keys) {
         os << std::quoted(key->id) << "(" << node.children.at(key) << ") ";
     }
@@ -130,8 +150,10 @@ void Node::print_full() const {
     for (const auto& [key, _] : children) {
         keys[idx++] = key;
     }
-    std::sort(keys.begin(), keys.end(), [](Node* a, Node* b) { return a->get_id() < b->get_id(); });
+    std::sort(keys.begin(), keys.end(),
+              [](Node* a, Node* b) { return a->get_id() < b->get_id(); });
     for (const auto key : keys) {
-        std::cout << "  Child ID: " << key->get_id() << ", Weight: " << children.at(key) << "\n";
+        std::cout << "  Child ID: " << key->get_id()
+                  << ", Weight: " << children.at(key) << "\n";
     }
 }

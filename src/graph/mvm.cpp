@@ -1,8 +1,23 @@
+/**
+ * @file
+ * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
+ * @version 1.0
+ * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
+ */
 #include <mcis/graph.h>
+#include <omp.h>
 
-Graph Graph::create_mvm_graph_from_mat_vec(const std::vector<std::vector<std::string>>& mat,
-                                           const std::vector<std::string>& vec,
-                                           bool from_dimensions) {
+#include <iostream>
+#include <string>
+#include <vector>
+
+Graph Graph::create_mvm_graph_from_mat_vec(
+    const std::vector<std::vector<std::string>>& mat,
+    const std::vector<std::string>& vec, bool from_dimensions) {
     Graph graph;
     int m = static_cast<int>(mat.size());
     int n = static_cast<int>(vec.size());
@@ -28,7 +43,8 @@ Graph Graph::create_mvm_graph_from_mat_vec(const std::vector<std::vector<std::st
 
     for (int set = 3; set <= n + 1; ++set) {
         for (int i = 1; i <= m; ++i) {
-            std::string acc_node = "v^" + std::to_string(set) + "_" + std::to_string(i);
+            std::string acc_node
+                = "v^" + std::to_string(set) + "_" + std::to_string(i);
             graph.add_node(acc_node);
         }
     }
@@ -42,7 +58,8 @@ Graph Graph::create_mvm_graph_from_mat_vec(const std::vector<std::vector<std::st
         int k = (j - 1) / (m + 1);
         for (int i = 0; i < m; ++i) {
             std::string to_node = "v^2_" + std::to_string(j - k + i);
-            std::cout << "Adding edge from " << from_node << " to " << to_node << std::endl;
+            std::cout << "Adding edge from " << from_node << " to " << to_node
+                      << std::endl;
             graph.add_edge(from_node, to_node, 0);
         }
     }
@@ -59,8 +76,10 @@ Graph Graph::create_mvm_graph_from_mat_vec(const std::vector<std::vector<std::st
     // edges from 4.1.2
     for (int i = 2; i <= n; ++i) {
         for (int j = 1; j <= m; ++j) {
-            std::string from_node = "v^" + std::to_string(i) + "_" + std::to_string(j);
-            std::string to_node = "v^" + std::to_string(i + 1) + "_" + std::to_string(j);
+            std::string from_node
+                = "v^" + std::to_string(i) + "_" + std::to_string(j);
+            std::string to_node
+                = "v^" + std::to_string(i + 1) + "_" + std::to_string(j);
             graph.add_edge(from_node, to_node, 0);
         }
     }
@@ -72,10 +91,12 @@ Graph Graph::create_mvm_graph_from_mat_vec(const std::vector<std::vector<std::st
         std::string to_node;
         if (j % m == 0) {
             from_node = "v^2_" + std::to_string(j);
-            to_node = "v^" + std::to_string(2 + ((j - 1) / m)) + "_" + std::to_string(m);
+            to_node = "v^" + std::to_string(2 + ((j - 1) / m)) + "_"
+                      + std::to_string(m);
         } else {
             from_node = "v^2_" + std::to_string(j);
-            to_node = "v^" + std::to_string(2 + ((j - 1) / m)) + "_" + std::to_string(j % m);
+            to_node = "v^" + std::to_string(2 + ((j - 1) / m)) + "_"
+                      + std::to_string(j % m);
         }
         graph.add_edge(from_node, to_node, 0);
     }

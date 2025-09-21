@@ -1,3 +1,13 @@
+/**
+ * @file
+ * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
+ * @version 1.0
+ * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
+ */
 #include <mcis/graph.h>
 
 #include "time.h"
@@ -29,7 +39,9 @@ Graph& Graph::operator=(const Graph& other) {
     return *this;
 }
 
-Graph::Graph(Graph&& other) noexcept : nodes(std::move(other.nodes)) { other.nodes.clear(); }
+Graph::Graph(Graph&& other) noexcept : nodes(std::move(other.nodes)) {
+    other.nodes.clear();
+}
 
 Graph& Graph::operator=(Graph&& other) noexcept {
     if (this != &other) {
@@ -109,7 +121,8 @@ void Graph::print_graph() const {
             if (!first) {
                 std::cout << ", ";
             }
-            std::cout << child_pair.first->get_id() << "(" << child_pair.second << ")";
+            std::cout << child_pair.first->get_id() << "(" << child_pair.second
+                      << ")";
             first = false;
         }
         std::cout << "]\n";
@@ -154,7 +167,8 @@ bool Graph::remove_node(const std::string& id) {
 
     auto children_copy = node_to_remove->get_children();
     for (const auto& [child, weight] : children_copy) {
-        node_to_remove->remove_edge(child);  // This properly updates parent counts
+        node_to_remove->remove_edge(
+            child);  // This properly updates parent counts
     }
 
     for (auto& pair : nodes) {
@@ -173,7 +187,8 @@ bool Graph::remove_node(const std::string& id) {
     return true;
 }
 
-bool Graph::add_edge(const std::string& from_id, const std::string& to_id, int weight) {
+bool Graph::add_edge(const std::string& from_id, const std::string& to_id,
+                     int weight) {
     auto from_it = nodes.find(from_id);
     auto to_it = nodes.find(to_id);
     if (from_it == nodes.end() || to_it == nodes.end()) {
@@ -187,7 +202,8 @@ bool Graph::add_edge(const std::string& from_id, const std::string& to_id, int w
     return result;
 }
 
-bool Graph::add_edge_set(const std::string& from_id, const std::vector<std::string>& to_ids,
+bool Graph::add_edge_set(const std::string& from_id,
+                         const std::vector<std::string>& to_ids,
                          const std::vector<int>& weights) {
     bool use_zero_weights = weights.empty() || weights.size() != to_ids.size();
     auto from_it = nodes.find(from_id);
@@ -201,7 +217,8 @@ bool Graph::add_edge_set(const std::string& from_id, const std::vector<std::stri
     for (size_t i = 0; i < to_ids.size(); ++i) {
         int weight = use_zero_weights ? 0 : weights[i];
         auto to_it = nodes.find(to_ids[i]);
-        if (to_it != nodes.end() && from_it->second->add_edge(to_it->second, weight)) {
+        if (to_it != nodes.end()
+            && from_it->second->add_edge(to_it->second, weight)) {
             any_added = true;
         } else {
             all_added = false;
@@ -227,14 +244,15 @@ bool Graph::remove_edge(const std::string& from_id, const std::string& to_id) {
     return result;
 }
 
-bool Graph::change_edge_weight(const std::string& from_id, const std::string& to_id,
-                               int new_weight) {
+bool Graph::change_edge_weight(const std::string& from_id,
+                               const std::string& to_id, int new_weight) {
     auto from_it = nodes.find(from_id);
     auto to_it = nodes.find(to_id);
     if (from_it == nodes.end() || to_it == nodes.end()) {
         return false;
     }
-    bool result = from_it->second->change_edge_weight(to_it->second, new_weight);
+    bool result
+        = from_it->second->change_edge_weight(to_it->second, new_weight);
     return result;
 }
 
@@ -248,7 +266,9 @@ Node* Graph::get_node(const std::string& id) const {
 
 int Graph::get_num_nodes() const { return static_cast<int>(nodes.size()); }
 
-const std::unordered_map<std::string, Node*>& Graph::get_nodes() const { return nodes; }
+const std::unordered_map<std::string, Node*>& Graph::get_nodes() const {
+    return nodes;
+}
 
 bool Graph::operator==(const Graph& other) const {
     if (get_num_nodes() != other.get_num_nodes()) {
@@ -274,8 +294,9 @@ std::ostream& operator<<(std::ostream& os, const Graph& graph) {
     for (const auto& [_, node] : nodes_map) {
         node_list[idx++] = node;
     }
-    std::sort(node_list.begin(), node_list.end(),
-              [](const Node* a, const Node* b) { return a->get_id() < b->get_id(); });
+    std::sort(
+        node_list.begin(), node_list.end(),
+        [](const Node* a, const Node* b) { return a->get_id() < b->get_id(); });
     for (const auto node : node_list) {
         os << *node << "\n";
     }
@@ -301,7 +322,8 @@ void Graph::generate_diagram_file(const std::string& graph_name) const {
         for (const auto& [_, node] : nodes) {
             for (const auto& [child, weight] : node->get_children()) {
                 outputFile << "    " << std::quoted(node->get_id()) << " -> "
-                           << std::quoted(child->get_id()) << " [label=\"" << weight << "\"];\n";
+                           << std::quoted(child->get_id()) << " [label=\""
+                           << weight << "\"];\n";
             }
         }
     }
@@ -328,7 +350,8 @@ int Graph::remove_nodes_bulk(const std::vector<std::string>& node_ids) {
 
     if (nodes_to_remove.empty()) return 0;
 
-    std::unordered_set<Node*> removal_set(nodes_to_remove.begin(), nodes_to_remove.end());
+    std::unordered_set<Node*> removal_set(nodes_to_remove.begin(),
+                                          nodes_to_remove.end());
 
     for (Node* node_to_remove : nodes_to_remove) {
         auto children_copy = node_to_remove->get_children();
@@ -360,7 +383,9 @@ int Graph::remove_nodes_bulk(const std::vector<std::string>& node_ids) {
     return static_cast<int>(nodes_to_remove.size());
 }
 
-void Graph::reserve_nodes(size_t expected_size) { nodes.reserve(expected_size); }
+void Graph::reserve_nodes(size_t expected_size) {
+    nodes.reserve(expected_size);
+}
 
 void Graph::invalidate_caches() const {
     dag_cache_valid = false;

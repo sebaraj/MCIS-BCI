@@ -3,15 +3,19 @@
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
  */
 
-#ifndef MCIS_ALGORITHM_H
-#define MCIS_ALGORITHM_H
+#ifndef INCLUDE_MCIS_MCIS_ALGORITHM_H_
+#define INCLUDE_MCIS_MCIS_ALGORITHM_H_
 
 #include <vector>
 
-#include "graph.h"
-#include "mcis_finder.h"
+#include "mcis/graph.h"
+#include "mcis/mcis_finder.h"
 
 /**
  * @enum AlgorithmType
@@ -26,13 +30,13 @@ enum class AlgorithmType { BRON_KERBOSCH_SERIAL };
  * Induced Subgraph (MCIS) between two graphs.
  */
 class MCISAlgorithm {
-private:
+ private:
     /**
      * @brief List of available MCIS algorithms.
      */
     std::vector<MCISFinder*> algorithms;
 
-public:
+ public:
     /**
      * @brief Constructs the MCISAlgorithm manager and initializes available algorithms.
      */
@@ -50,7 +54,8 @@ public:
      * @param type The type of algorithm to run (from AlgorithmType enum).
      * @return A vector of pointers to Graph objects representing the found MCIS results.
      */
-    std::vector<Graph*> run(const Graph& g1, const Graph& g2, AlgorithmType type);
+    std::vector<Graph*> run(const Graph& g1, const Graph& g2,
+                            AlgorithmType type);
 
     /**
      * @brief Runs a user-specified MCIS algorithm on two input graphs.
@@ -78,4 +83,4 @@ public:
                                               std::vector<AlgorithmType> types);
 };
 
-#endif  // MCIS_ALGORITHM_H
+#endif  // INCLUDE_MCIS_MCIS_ALGORITHM_H_

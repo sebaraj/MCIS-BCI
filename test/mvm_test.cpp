@@ -1,3 +1,13 @@
+/**
+ * @file
+ * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
+ * @version 1.0
+ * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
+ */
 #include <cstdlib>
 #include <iostream>
 
@@ -5,10 +15,11 @@
 #include "mcis/graph.h"
 
 class MVMTest : public ::testing::Test {
-protected:
+ protected:
     void SetUp() override {
-        generate_diagrams = std::getenv("GENERATE_DIAGRAMS") != nullptr
-                            && std::string(std::getenv("GENERATE_DIAGRAMS")) == "1";
+        generate_diagrams
+            = std::getenv("GENERATE_DIAGRAMS") != nullptr
+              && std::string(std::getenv("GENERATE_DIAGRAMS")) == "1";
     }
 
     void TearDown() override {}
@@ -18,12 +29,14 @@ protected:
 
 // Test 1: Create MVM(2,2) graph and generate diagram
 TEST_F(MVMTest, MVM2x2GraphCreation) {
-    std::vector<std::vector<std::string>> mat = {{"m0,0", "m0,1"}, {"m1,0", "m1,1"}};
+    std::vector<std::vector<std::string>> mat
+        = {{"m0,0", "m0,1"}, {"m1,0", "m1,1"}};
     std::vector<std::string> vec = {"v0", "v1"};
 
     Graph mvm_graph = Graph::create_mvm_graph_from_mat_vec(mat, vec);
 
-    std::cout << "MVM(2,2) created with " << mvm_graph.get_num_nodes() << " nodes\n";
+    std::cout << "MVM(2,2) created with " << mvm_graph.get_num_nodes()
+              << " nodes\n";
 
     if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_2x2");
 }
@@ -36,7 +49,8 @@ TEST_F(MVMTest, MVM3x2GraphCreation) {
 
     Graph mvm_graph = Graph::create_mvm_graph_from_mat_vec(mat, vec);
 
-    std::cout << "MVM(3,2) created with " << mvm_graph.get_num_nodes() << " nodes\n";
+    std::cout << "MVM(3,2) created with " << mvm_graph.get_num_nodes()
+              << " nodes\n";
 
     if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_3x2");
 }
@@ -49,7 +63,8 @@ TEST_F(MVMTest, MVM2x3GraphCreation) {
 
     Graph mvm_graph = Graph::create_mvm_graph_from_mat_vec(mat, vec);
 
-    std::cout << "MVM(2,3) created with " << mvm_graph.get_num_nodes() << " nodes\n";
+    std::cout << "MVM(2,3) created with " << mvm_graph.get_num_nodes()
+              << " nodes\n";
 
     if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_2x3");
 }
@@ -58,18 +73,21 @@ TEST_F(MVMTest, MVM2x3GraphCreation) {
 TEST_F(MVMTest, MVMFromDimensionsCreation) {
     Graph mvm_graph = Graph::create_mvm_graph_from_dimensions(2, 3);
 
-    std::cout << "MVM from dimensions (2,3) created with " << mvm_graph.get_num_nodes()
-              << " nodes\n";
+    std::cout << "MVM from dimensions (2,3) created with "
+              << mvm_graph.get_num_nodes() << " nodes\n";
 
-    if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_dimensions_2x3");
+    if (generate_diagrams)
+        mvm_graph.generate_diagram_file("mvm_dimensions_2x3");
 }
 
 // Test 5: Test edge cases
 TEST_F(MVMTest, MVMGraphEdgeCases) {
     std::vector<std::vector<std::string>> empty_mat;
     std::vector<std::string> empty_vec;
-    Graph empty_graph = Graph::create_mvm_graph_from_mat_vec(empty_mat, empty_vec);
-    std::cout << "Empty graph created with " << empty_graph.get_num_nodes() << " nodes\n";
+    Graph empty_graph
+        = Graph::create_mvm_graph_from_mat_vec(empty_mat, empty_vec);
+    std::cout << "Empty graph created with " << empty_graph.get_num_nodes()
+              << " nodes\n";
     if (generate_diagrams) empty_graph.generate_diagram_file("mvm_empty");
 }
 
@@ -77,7 +95,8 @@ TEST_F(MVMTest, MVMGraphEdgeCases) {
 TEST_F(MVMTest, MVM4x4LargeGraphCreation) {
     Graph mvm_graph = Graph::create_mvm_graph_from_dimensions(4, 4);
 
-    std::cout << "MVM(4,4) created with " << mvm_graph.get_num_nodes() << " nodes\n";
+    std::cout << "MVM(4,4) created with " << mvm_graph.get_num_nodes()
+              << " nodes\n";
 
     if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_4x4");
 }
@@ -89,7 +108,9 @@ TEST_F(MVMTest, MVMEdgeConnectivityVerification) {
 
     Graph mvm_graph = Graph::create_mvm_graph_from_mat_vec(mat, vec);
 
-    std::cout << "MVM with named elements created with " << mvm_graph.get_num_nodes() << " nodes\n";
+    std::cout << "MVM with named elements created with "
+              << mvm_graph.get_num_nodes() << " nodes\n";
 
-    if (generate_diagrams) mvm_graph.generate_diagram_file("mvm_connectivity_test");
+    if (generate_diagrams)
+        mvm_graph.generate_diagram_file("mvm_connectivity_test");
 }

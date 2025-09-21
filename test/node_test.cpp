@@ -1,3 +1,13 @@
+/**
+ * @file
+ * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
+ * @version 1.0
+ * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
+ */
 #include "mcis/node.h"
 
 #include <limits>
@@ -7,7 +17,7 @@
 #include "gtest/gtest.h"
 
 class NodeTest : public ::testing::Test {
-protected:
+ protected:
     void SetUp() override {
         node_a = std::make_unique<Node>("A");
         node_b = std::make_unique<Node>("B");
@@ -55,7 +65,8 @@ TEST_F(NodeTest, CopyConstructor) {
     EXPECT_TRUE(copied_node.contains_edge(node_c.get()));
 }
 
-// Test 3: Validates copy assignment operator handles existing state and self-assignment
+// Test 3: Validates copy assignment operator handles existing state and
+// self-assignment
 TEST_F(NodeTest, CopyAssignment) {
     node_a->add_edge(node_b.get(), 15);
     Node assigned_node("Different");
@@ -69,7 +80,8 @@ TEST_F(NodeTest, CopyAssignment) {
     EXPECT_EQ(assigned_node.get_id(), node_a->get_id());
 }
 
-// Test 4: Confirms move constructor transfers resources and leaves source in valid state
+// Test 4: Confirms move constructor transfers resources and leaves source in
+// valid state
 TEST_F(NodeTest, MoveConstructor) {
     node_a->add_edge(node_b.get(), 25);
     std::string original_id = node_a->get_id();
@@ -85,7 +97,8 @@ TEST_F(NodeTest, MoveConstructor) {
     EXPECT_EQ(node_a->get_num_children(), 0);
 }
 
-// Test 5: Tests move assignment operator transfers state and handles self-assignment
+// Test 5: Tests move assignment operator transfers state and handles
+// self-assignment
 TEST_F(NodeTest, MoveAssignment) {
     node_a->add_edge(node_b.get(), 30);
     Node assigned_node("Target");
@@ -102,7 +115,8 @@ TEST_F(NodeTest, MoveAssignment) {
     EXPECT_EQ(self_assign.get_id(), "Self");
 }
 
-// Test 6: Verifies successful edge addition updates parent/child counts correctly
+// Test 6: Verifies successful edge addition updates parent/child counts
+// correctly
 TEST_F(NodeTest, AddEdgeSuccess) {
     EXPECT_TRUE(node_a->add_edge(node_b.get(), 5));
     EXPECT_EQ(node_a->get_num_children(), 1);
@@ -174,7 +188,8 @@ TEST_F(NodeTest, EdgeQueries) {
     EXPECT_EQ(children.at(node_c.get()), 10);
 }
 
-// Test 11: Confirms correct identification of source and sink nodes in graph topology
+// Test 11: Confirms correct identification of source and sink nodes in graph
+// topology
 TEST_F(NodeTest, SourceAndSinkIdentification) {
     EXPECT_TRUE(node_a->is_source() && node_a->is_sink());
 
@@ -226,7 +241,8 @@ TEST_F(NodeTest, SameIdComparison) {
     EXPECT_TRUE(node1.same_id(node2));
 }
 
-// Test 14: Verifies string representation format for nodes with and without edges
+// Test 14: Verifies string representation format for nodes with and without
+// edges
 TEST_F(NodeTest, StreamOutputOperator) {
     std::ostringstream oss;
 
@@ -246,7 +262,8 @@ TEST_F(NodeTest, StreamOutputOperator) {
     EXPECT_TRUE(output.find("\"C\"(10)") != std::string::npos);
 }
 
-// Test 15: Stress tests node operations with complex multi-node graph structures
+// Test 15: Stress tests node operations with complex multi-node graph
+// structures
 TEST_F(NodeTest, ComplexGraphScenarios) {
     std::vector<std::unique_ptr<Node>> nodes;
     for (int i = 0; i < 10; ++i) {
@@ -303,7 +320,8 @@ TEST_F(NodeTest, MemoryManagementAndDanglingPointers) {
     EXPECT_TRUE(node_a->get_children().empty());
 }
 
-// Test 17: Tests edge operations with extreme weight values and boundary conditions
+// Test 17: Tests edge operations with extreme weight values and boundary
+// conditions
 TEST_F(NodeTest, EdgeWeightExtremesAndBoundaryConditions) {
     const int max_weight = std::numeric_limits<int>::max();
     const int min_weight = std::numeric_limits<int>::min();
@@ -332,7 +350,8 @@ TEST_F(NodeTest, EdgeWeightExtremesAndBoundaryConditions) {
     EXPECT_EQ(node_d->get_num_parents(), 1);
 }
 
-// Test 18: Comprehensive testing of equality operations with complex edge structures
+// Test 18: Comprehensive testing of equality operations with complex edge
+// structures
 TEST_F(NodeTest, ComprehensiveEqualityAndComparisonEdgeCases) {
     Node node1("Complex");
     Node node2("Complex");

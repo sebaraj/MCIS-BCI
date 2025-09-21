@@ -3,6 +3,10 @@
  * @author Bryan SebaRaj <bryan.sebaraj@yale.edu>
  * @version 1.0
  * @section DESCRIPTION
+ *
+ * Copyright (c) 2025 Bryan SebaRaj
+ *
+ * This software is licensed under the MIT License.
  */
 
 #ifndef NODE_H
@@ -18,7 +22,7 @@
  * This class provides methods to manage edges and retrieve node information.
  */
 class Node {
-private:
+ private:
     /**
      * @brief Unique identifier for the node.
      */
@@ -35,13 +39,15 @@ private:
     int num_children;
 
     /**
-     * @brief Map of child nodes to the weights of the directed edges connecting to them.
+     * @brief Map of child nodes to the weights of the directed edges connecting
+     * to them.
      */
     std::unordered_map<Node*, int> children;
 
-public:
+ public:
     /**
-     * @brief Constructs a Node with a given ID and optional parent/child counts.
+     * @brief Constructs a Node with a given ID and optional parent/child
+     * counts.
      * @param id Unique identifier for the node.
      */
     Node(const std::string& id);
@@ -102,14 +108,16 @@ public:
      * @brief Adds a directed edge to a neighbor node with a specified weight.
      * @param neighbor Pointer to the neighbor node.
      * @param weight Weight of the edge.
-     * @return True if the edge was added successfully, false if it already exists.
+     * @return True if the edge was added successfully, false if it already
+     * exists.
      */
     bool add_edge(Node* neighbor, int weight);
 
     /**
      * @brief Removes the directed edge to a neighbor node.
      * @param neighbor Pointer to the neighbor node.
-     * @return True if the edge was removed successfully, false if it does not exist.
+     * @return True if the edge was removed successfully, false if it does not
+     * exist.
      */
     bool remove_edge(Node* neighbor);
 
@@ -117,7 +125,8 @@ public:
      * @brief Changes the weight of the edge to a neighbor node.
      * @param neighbor Pointer to the neighbor node.
      * @param new_weight New weight for the edge.
-     * @return True if the weight was changed successfully, false if the edge does not exist.
+     * @return True if the weight was changed successfully, false if the edge
+     * does not exist.
      */
     bool change_edge_weight(Node* neighbor, int new_weight);
 
@@ -144,8 +153,8 @@ public:
     bool is_sink() const;
 
     /**
-     * @brief Equality operator to compare two nodes based on their ID, parent count, child count,
-     * and edges.
+     * @brief Equality operator to compare two nodes based on their ID, parent
+     * count, child count, and edges.
      * @return True if the nodes are equal, false otherwise.
      */
     bool operator==(const Node& other) const;
@@ -159,7 +168,8 @@ public:
     bool same_id(const Node& other) const;
 
     /**
-     * @brief Provides access to the children map for external use (e.g., in Graph class).
+     * @brief Provides access to the children map for external use (e.g., in
+     * Graph class).
      * @return Reference to the children map.
      */
     [[nodiscard]]
@@ -174,8 +184,8 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Node& node);
 
     /**
-     * @brief prints node with all elements (id, number of parents, number of children, and children
-     * ids with weights)
+     * @brief prints node with all elements (id, number of parents, number of
+     * children, and children ids with weights)
      * @return void, prints to std::cout
      */
     void print_full() const;
