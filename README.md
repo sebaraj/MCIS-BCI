@@ -5,7 +5,7 @@
 _A Senior Thesis Project in Electrical Engineering and Computer Science_\
 _Yale University • CPSC 4900_
 
-[![C++](https://img.shields.io/badge/C++-20-blue.svg?style=flat&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
+[![C++](https://img.shields.io/badge/C++-23-blue.svg?style=flat&logo=cplusplus)](https://en.cppreference.com/w/cpp/23)
 [![CMake](https://img.shields.io/badge/CMake-3.22+-green.svg?style=flat&logo=cmake)](https://cmake.org/)
 [![GTest](https://img.shields.io/badge/Testing-Google%20Test-red.svg?style=flat)](https://github.com/google/googletest)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)
@@ -62,9 +62,9 @@ This framework provides:
 
 Ensure you have the following dependencies installed:
 
-- **C++ Compiler**: Supporting C++20 standard
-  - GCC 10+ / Clang 12+ / MSVC 2019+
-- **CMake**: Version 3.22.1 or higher
+- **C++ Compiler**: Supporting C++23
+  - GCC 14+ / Clang 17+ / MSVC 2022+
+- **CMake**: Version 3.22.1+
 - **Conan**: C++ package manager
 - **Ninja**: Build system
 - **Graphviz (dot)**: For graph visualization (optional)
@@ -113,6 +113,10 @@ ctest --verbose
 ---
 
 ## Usage
+
+### Documentation
+
+https://sebaraj.github.io/MCIS-BCI/
 
 ### Basic Graph Operations
 

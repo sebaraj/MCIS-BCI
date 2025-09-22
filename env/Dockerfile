@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
@@ -8,7 +8,7 @@ RUN apt-get update \
     ninja-build \
     python3-pip \
     git \
-    && pip3 install --no-cache-dir conan \
+    && pip3 install --no-cache-dir --break-system-packages conan \
     && rm -rf /var/lib/apt/lists/*
 
 RUN conan profile detect

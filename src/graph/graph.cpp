@@ -10,6 +10,7 @@
  */
 #include <mcis/graph.h>
 
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
