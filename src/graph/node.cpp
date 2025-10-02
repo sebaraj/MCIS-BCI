@@ -19,13 +19,14 @@
 #include <vector>
 
 Node::Node(const std::string& id)
-    : id(std::move(id)), num_parents(0), num_children(0) {}
+    : id(std::move(id)), num_parents(0), num_children(0), tag(0) {}
 
 Node::Node(const Node& other)
     : id(other.id),
       num_parents(other.num_parents),
       num_children(other.num_children),
-      children(other.children) {}
+      children(other.children),
+      tag(other.tag) {}
 
 Node& Node::operator=(const Node& other) {
     if (this != &other) {
@@ -33,6 +34,7 @@ Node& Node::operator=(const Node& other) {
         num_parents = other.num_parents;
         num_children = other.num_children;
         children = other.children;
+        tag = other.tag;
     }
     return *this;
 }
@@ -41,9 +43,11 @@ Node::Node(Node&& other) noexcept
     : id(std::move(other.id)),
       num_parents(other.num_parents),
       num_children(other.num_children),
-      children(std::move(other.children)) {
+      children(std::move(other.children)),
+      tag(other.tag) {
     other.num_parents = 0;
     other.num_children = 0;
+    other.tag = 0;
 }
 
 Node& Node::operator=(Node&& other) noexcept {
@@ -52,8 +56,10 @@ Node& Node::operator=(Node&& other) noexcept {
         num_parents = other.num_parents;
         num_children = other.num_children;
         children = std::move(other.children);
+        tag = other.tag;
         other.num_parents = 0;
         other.num_children = 0;
+        other.tag = 0;
     }
     return *this;
 }
@@ -61,6 +67,10 @@ Node& Node::operator=(Node&& other) noexcept {
 Node::~Node() { children.clear(); }
 
 std::string Node::get_id() const { return id; }
+
+int Node::get_tag() const { return tag; }
+
+void Node::set_tag(int new_tag) { tag = new_tag; }
 
 int Node::get_num_parents() const { return num_parents; }
 

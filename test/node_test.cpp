@@ -265,6 +265,17 @@ TEST_F(NodeTest, StreamOutputOperator) {
     EXPECT_TRUE(output.find("\"C\"(10)") != std::string::npos);
 }
 
+// Test 15: Verifies tag getter and setter
+TEST_F(NodeTest, GetAndSetTag) {
+    EXPECT_EQ(node_a->get_tag(), 0);
+
+    node_a->set_tag(10);
+    EXPECT_EQ(node_a->get_tag(), 10);
+
+    node_a->set_tag(-5);
+    EXPECT_EQ(node_a->get_tag(), -5);
+}
+
 // Test 15: Stress tests node operations with complex multi-node graph
 // structures
 TEST_F(NodeTest, ComplexGraphScenarios) {

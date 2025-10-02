@@ -13,4 +13,4 @@ class MCISConan(ConanFile):
 
     def configure(self):
         self.options["gtest"].shared = False
-        self.settings.compiler.cppstd = "20"
+        self.settings.compiler.cppstd = "23"

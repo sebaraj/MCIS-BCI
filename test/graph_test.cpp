@@ -433,3 +433,18 @@ TEST_F(GraphTest, ComplexGraphOperationsAndStressTesting) {
     if (generate_diagrams)
         graph->generate_diagram_file("graph_complex_operations");
 }
+
+// Test 21: Verifies setting node tags
+TEST_F(GraphTest, SetNodeTag) {
+    graph->add_node("A");
+    graph->add_node("B");
+
+    EXPECT_TRUE(graph->set_node_tag("A", 5));
+    EXPECT_EQ(graph->get_node("A")->get_tag(), 5);
+    EXPECT_EQ(graph->get_node("B")->get_tag(), 0);
+
+    EXPECT_TRUE(graph->set_node_tag("B", -10));
+    EXPECT_EQ(graph->get_node("B")->get_tag(), -10);
+
+    EXPECT_FALSE(graph->set_node_tag("C", 15));
+}

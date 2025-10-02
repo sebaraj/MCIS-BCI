@@ -266,6 +266,15 @@ bool Graph::change_edge_weight(const std::string& from_id,
     return result;
 }
 
+bool Graph::set_node_tag(const std::string& id, int new_tag) {
+    auto it = nodes.find(id);
+    if (it == nodes.end()) {
+        return false;
+    }
+    it->second->set_tag(new_tag);
+    return true;
+}
+
 Node* Graph::get_node(const std::string& id) const {
     auto it = nodes.find(id);
     if (it != nodes.end()) {

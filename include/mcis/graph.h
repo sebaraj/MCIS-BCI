@@ -175,6 +175,15 @@ class Graph {
                             const std::string& to_id, int new_weight);
 
     /**
+     * @brief Changes the tag of the node with the given ID.
+     * @param id Unique identifier of the node.
+     * @param new_tag New tag for the node.
+     * @return True if the tag was changed successfully, false if the node
+     * does not exist.
+     */
+    bool set_node_tag(const std::string& id, int new_tag);
+
+    /**
      * @brief Retrieves the node identified by the given ID
      * @param id Unique identifier of the node to retrieve.
      * @return Pointer to the Node if found, nullptr otherwise.

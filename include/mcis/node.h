@@ -44,6 +44,11 @@ class Node {
      */
     std::unordered_map<Node*, int> children;
 
+    /**
+     * @brief Integer tag for grouping nodes.
+     */
+    int tag;
+
  public:
     /**
      * @brief Constructs a Node with a given ID and optional parent/child
@@ -89,6 +94,19 @@ class Node {
      */
     [[nodiscard]]
     std::string get_id() const;
+
+    /**
+     * @brief Retrieves the node's tag.
+     * @return The node's tag as an integer.
+     */
+    [[nodiscard]]
+    int get_tag() const;
+
+    /**
+     * @brief Sets the node's tag.
+     * @param new_tag The new tag for the node.
+     */
+    void set_tag(int new_tag);
 
     /**
      * @brief Retrieves the number of parent nodes (incoming edges).
