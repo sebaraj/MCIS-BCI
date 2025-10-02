@@ -1,0 +1,26 @@
+name: Build and Test (TSan)
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  cmake-ninja-conan-gtest:
+    runs-on: ubuntu-latest
+    container:
+      image: bryanwsebaraj/mcis-bci:latest
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Build and Test
+        run: |
+          mkdir build
+          cd build
+          conan profile detect
+          conan install .. --build=missing -of . -v
+          cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fsanitize=thread -g" -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DOpenMP_ROOT=.
+          cmake --build .
+          ctest --verbose
