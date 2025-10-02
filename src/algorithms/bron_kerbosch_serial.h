@@ -82,9 +82,10 @@ class BronKerboschSerial : public MCISFinder {
      * @param g1 The first input graph.
      * @param g2 The second input graph.
      * @return A vector of pointers to Graph objects representing the found MCIS
-     * results.
+     * results, or an error if the graphs are empty.
      */
-    std::vector<Graph*> find(const Graph& g1, const Graph& g2) override;
+    std::expected<std::vector<Graph*>, mcis::AlgorithmError> find(
+        const Graph& g1, const Graph& g2) override;
 
  private:
     /**

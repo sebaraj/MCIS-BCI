@@ -109,8 +109,10 @@ TEST_F(BronKerboschTest, IdenticalTriangleGraphs) {
         g2.generate_diagram_file("identical_triangle_g2");
     }
 
-    std::vector<Graph*> results
+    auto result
         = mcis_algorithm->run(g1, g2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     EXPECT_FALSE(results.empty())
         << "MCIS should find at least one result for identical graphs";
@@ -136,8 +138,10 @@ TEST_F(BronKerboschTest, TriangleVsPath) {
         path.generate_diagram_file("triangle_vs_path_path");
     }
 
-    std::vector<Graph*> results = mcis_algorithm->run(
-        triangle, path, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    auto result = mcis_algorithm->run(triangle, path,
+                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     print_mcis_results(results, "TriangleVsPath");
 
@@ -152,16 +156,10 @@ TEST_F(BronKerboschTest, TriangleVsPath) {
 TEST_F(BronKerboschTest, EmptyGraphs) {
     Graph empty1, empty2;
 
-    std::vector<Graph*> results = mcis_algorithm->run(
-        empty1, empty2, AlgorithmType::BRON_KERBOSCH_SERIAL);
-
-    print_mcis_results(results, "EmptyGraphs");
-
-    EXPECT_TRUE(results.empty()) << "MCIS of empty graphs should be empty";
-
-    for (auto* graph : results) {
-        delete graph;
-    }
+    auto result = mcis_algorithm->run(empty1, empty2,
+                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    EXPECT_FALSE(result.has_value());
+    EXPECT_EQ(result.error(), mcis::AlgorithmError::EMPTY_GRAPH);
 }
 
 // Test 4: Single node graphs
@@ -175,8 +173,10 @@ TEST_F(BronKerboschTest, SingleNodeGraphs) {
         g2.generate_diagram_file("single_node_g2");
     }
 
-    std::vector<Graph*> results
+    auto result
         = mcis_algorithm->run(g1, g2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     print_mcis_results(results, "SingleNodeGraphs");
 
@@ -206,8 +206,10 @@ TEST_F(BronKerboschTest, MVMGraphComparison) {
     std::cout << "MVM(2,2) has " << mvm_2x2.get_num_nodes() << " nodes\n";
     std::cout << "MVM(3,2) has " << mvm_3x2.get_num_nodes() << " nodes\n";
 
-    std::vector<Graph*> results = mcis_algorithm->run(
-        mvm_2x2, mvm_3x2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    auto result = mcis_algorithm->run(mvm_2x2, mvm_3x2,
+                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     print_mcis_results(results, "MVMComparison");
 
@@ -228,8 +230,10 @@ TEST_F(BronKerboschTest, SquareVsTriangle) {
         triangle.generate_diagram_file("square_vs_triangle_triangle");
     }
 
-    std::vector<Graph*> results = mcis_algorithm->run(
-        square, triangle, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    auto result = mcis_algorithm->run(square, triangle,
+                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     print_mcis_results(results, "SquareVsTriangle");
 
@@ -251,8 +255,10 @@ TEST_F(BronKerboschTest, StarGraphComparison) {
         star5.generate_diagram_file("star_comparison_star5");
     }
 
-    std::vector<Graph*> results = mcis_algorithm->run(
-        star3, star5, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    auto result = mcis_algorithm->run(star3, star5,
+                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     print_mcis_results(results, "StarComparison");
 
@@ -304,8 +310,10 @@ TEST_F(BronKerboschTest, DisconnectedComponents) {
         g2.generate_diagram_file("disconnected_g2");
     }
 
-    std::vector<Graph*> results
+    auto result
         = mcis_algorithm->run(g1, g2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     print_mcis_results(results, "DisconnectedComponents");
 
@@ -333,8 +341,10 @@ TEST_F(BronKerboschTest, LargerMVMPerformance) {
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    std::vector<Graph*> results = mcis_algorithm->run(
-        mvm_4x3, mvm_3x4, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    auto result = mcis_algorithm->run(mvm_4x3, mvm_3x4,
+                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -385,8 +395,10 @@ TEST_F(BronKerboschTest, CustomNamedGraphs) {
         g2.generate_diagram_file("custom_diamond_extended");
     }
 
-    std::vector<Graph*> results
+    auto result
         = mcis_algorithm->run(g1, g2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
 
     print_mcis_results(results, "CustomNamedGraphs");
 

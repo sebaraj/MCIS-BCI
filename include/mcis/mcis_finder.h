@@ -12,8 +12,10 @@
 #ifndef INCLUDE_MCIS_MCIS_FINDER_H_
 #define INCLUDE_MCIS_MCIS_FINDER_H_
 
+#include <expected>
 #include <vector>
 
+#include "mcis/errors.h"
 #include "mcis/graph.h"
 
 /**
@@ -29,9 +31,11 @@ class MCISFinder {
      * @param g1 The first graph.
      * @param g2 The second graph.
      * @return A vector of pointers to Graph objects representing the MCIS
-     * found.
+     * found, or an error if the graphs are empty.
      */
-    virtual std::vector<Graph*> find(const Graph& g1, const Graph& g2) = 0;
+    virtual std::expected<std::vector<Graph*>, mcis::AlgorithmError> find(
+        const Graph& g1, const Graph& g2)
+        = 0;
 
     /**
      * Virtual destructor.

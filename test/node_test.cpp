@@ -121,26 +121,30 @@ TEST_F(NodeTest, MoveAssignment) {
 // Test 6: Verifies successful edge addition updates parent/child counts
 // correctly
 TEST_F(NodeTest, AddEdgeSuccess) {
-    EXPECT_TRUE(node_a->add_edge(node_b.get(), 5));
+    EXPECT_FALSE(node_a->add_edge(node_b.get(), 5));
     EXPECT_EQ(node_a->get_num_children(), 1);
     EXPECT_EQ(node_b->get_num_parents(), 1);
     EXPECT_FALSE(node_a->is_sink());
     EXPECT_FALSE(node_b->is_source());
 
-    EXPECT_TRUE(node_a->add_edge(node_b.get(), 5));
+    EXPECT_FALSE(node_a->add_edge(node_b.get(), 5));
     EXPECT_EQ(node_a->get_num_children(), 1);
 
-    EXPECT_TRUE(node_a->add_edge(node_c.get(), 10));
-    EXPECT_TRUE(node_a->add_edge(node_d.get(), 15));
+    EXPECT_FALSE(node_a->add_edge(node_c.get(), 10));
+    EXPECT_FALSE(node_a->add_edge(node_d.get(), 15));
     EXPECT_EQ(node_a->get_num_children(), 3);
 }
 
 // Test 7: Tests edge addition rejection for conflicting weights and self-loops
 TEST_F(NodeTest, AddEdgeFailure) {
     node_a->add_edge(node_b.get(), 5);
-    EXPECT_FALSE(node_a->add_edge(node_b.get(), 10));
+    auto error = node_a->add_edge(node_b.get(), 10);
+    EXPECT_TRUE(error.has_value());
+    EXPECT_EQ(error.value(), mcis::NodeError::EDGE_ALREADY_EXISTS);
 
-    EXPECT_FALSE(node_a->add_edge(node_a.get(), 5));
+    error = node_a->add_edge(node_a.get(), 5);
+    EXPECT_TRUE(error.has_value());
+    EXPECT_EQ(error.value(), mcis::NodeError::SELF_LOOP);
     EXPECT_EQ(node_a->get_num_children(), 1);
 }
 
@@ -149,15 +153,17 @@ TEST_F(NodeTest, RemoveEdge) {
     node_a->add_edge(node_b.get(), 5);
     node_a->add_edge(node_c.get(), 10);
 
-    EXPECT_TRUE(node_a->remove_edge(node_b.get()));
+    EXPECT_FALSE(node_a->remove_edge(node_b.get()));
     EXPECT_EQ(node_a->get_num_children(), 1);
     EXPECT_EQ(node_b->get_num_parents(), 0);
     EXPECT_FALSE(node_a->contains_edge(node_b.get()));
 
-    EXPECT_FALSE(node_a->remove_edge(node_d.get()));
+    auto error = node_a->remove_edge(node_d.get());
+    EXPECT_TRUE(error.has_value());
+    EXPECT_EQ(error.value(), mcis::NodeError::EDGE_DOES_NOT_EXIST);
     EXPECT_EQ(node_a->get_num_children(), 1);
 
-    EXPECT_TRUE(node_a->remove_edge(node_c.get()));
+    EXPECT_FALSE(node_a->remove_edge(node_c.get()));
     EXPECT_EQ(node_a->get_num_children(), 0);
     EXPECT_TRUE(node_a->is_sink());
 }
@@ -166,13 +172,15 @@ TEST_F(NodeTest, RemoveEdge) {
 TEST_F(NodeTest, ChangeEdgeWeight) {
     node_a->add_edge(node_b.get(), 5);
 
-    EXPECT_TRUE(node_a->change_edge_weight(node_b.get(), 15));
+    EXPECT_FALSE(node_a->change_edge_weight(node_b.get(), 15));
     auto& children = node_a->get_children();
     EXPECT_EQ(children.at(node_b.get()), 15);
 
-    EXPECT_FALSE(node_a->change_edge_weight(node_c.get(), 20));
+    auto error = node_a->change_edge_weight(node_c.get(), 20);
+    EXPECT_TRUE(error.has_value());
+    EXPECT_EQ(error.value(), mcis::NodeError::EDGE_DOES_NOT_EXIST);
 
-    EXPECT_TRUE(node_a->change_edge_weight(node_b.get(), -5));
+    EXPECT_FALSE(node_a->change_edge_weight(node_b.get(), -5));
     EXPECT_EQ(children.at(node_b.get()), -5);
 }
 
@@ -287,7 +295,7 @@ TEST_F(NodeTest, ComplexGraphScenarios) {
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
             if (i != j) {
-                nodes[i]->add_edge(nodes[j].get(), i * 10 + j);
+                EXPECT_FALSE(nodes[i]->add_edge(nodes[j].get(), i * 10 + j));
             }
         }
     }
@@ -301,12 +309,12 @@ TEST_F(NodeTest, ComplexGraphScenarios) {
 
     auto start_node = nodes[5].get();
     for (int i = 6; i < 10; ++i) {
-        EXPECT_TRUE(start_node->add_edge(nodes[i].get(), i));
+        EXPECT_FALSE(start_node->add_edge(nodes[i].get(), i));
     }
     EXPECT_EQ(start_node->get_num_children(), 4);
 
     for (int i = 6; i < 10; ++i) {
-        EXPECT_TRUE(start_node->remove_edge(nodes[i].get()));
+        EXPECT_FALSE(start_node->remove_edge(nodes[i].get()));
     }
     EXPECT_EQ(start_node->get_num_children(), 0);
     EXPECT_TRUE(start_node->is_sink());
@@ -315,7 +323,7 @@ TEST_F(NodeTest, ComplexGraphScenarios) {
 // Test 16: Tests safe handling of temporary node pointers and edge cleanup
 TEST_F(NodeTest, MemoryManagementAndDanglingPointers) {
     Node* temp_node = new Node("TempNode");
-    node_a->add_edge(temp_node, 42);
+    EXPECT_FALSE(node_a->add_edge(temp_node, 42));
 
     EXPECT_TRUE(node_a->contains_edge(temp_node));
     EXPECT_EQ(node_a->get_num_children(), 1);
@@ -324,7 +332,7 @@ TEST_F(NodeTest, MemoryManagementAndDanglingPointers) {
     const auto& children = node_a->get_children();
     EXPECT_EQ(children.at(temp_node), 42);
 
-    EXPECT_TRUE(node_a->remove_edge(temp_node));
+    EXPECT_FALSE(node_a->remove_edge(temp_node));
     EXPECT_EQ(node_a->get_num_children(), 0);
     EXPECT_EQ(temp_node->get_num_parents(), 0);
 
@@ -341,18 +349,18 @@ TEST_F(NodeTest, EdgeWeightExtremesAndBoundaryConditions) {
     const int min_weight = std::numeric_limits<int>::min();
     const int zero_weight = 0;
 
-    EXPECT_TRUE(node_a->add_edge(node_b.get(), max_weight));
-    EXPECT_TRUE(node_a->add_edge(node_c.get(), min_weight));
-    EXPECT_TRUE(node_a->add_edge(node_d.get(), zero_weight));
+    EXPECT_FALSE(node_a->add_edge(node_b.get(), max_weight));
+    EXPECT_FALSE(node_a->add_edge(node_c.get(), min_weight));
+    EXPECT_FALSE(node_a->add_edge(node_d.get(), zero_weight));
 
     const auto& children = node_a->get_children();
     EXPECT_EQ(children.at(node_b.get()), max_weight);
     EXPECT_EQ(children.at(node_c.get()), min_weight);
     EXPECT_EQ(children.at(node_d.get()), zero_weight);
 
-    EXPECT_TRUE(node_a->change_edge_weight(node_b.get(), min_weight));
-    EXPECT_TRUE(node_a->change_edge_weight(node_c.get(), max_weight));
-    EXPECT_TRUE(node_a->change_edge_weight(node_d.get(), -1));
+    EXPECT_FALSE(node_a->change_edge_weight(node_b.get(), min_weight));
+    EXPECT_FALSE(node_a->change_edge_weight(node_c.get(), max_weight));
+    EXPECT_FALSE(node_a->change_edge_weight(node_d.get(), -1));
 
     EXPECT_EQ(children.at(node_b.get()), min_weight);
     EXPECT_EQ(children.at(node_c.get()), max_weight);
@@ -373,37 +381,37 @@ TEST_F(NodeTest, ComprehensiveEqualityAndComparisonEdgeCases) {
     Node helper2("Helper2");
     Node helper3("Helper3");
 
-    node1.add_edge(&helper1, 10);
-    node1.add_edge(&helper2, -5);
-    node1.add_edge(&helper3, 0);
+    EXPECT_FALSE(node1.add_edge(&helper1, 10));
+    EXPECT_FALSE(node1.add_edge(&helper2, -5));
+    EXPECT_FALSE(node1.add_edge(&helper3, 0));
 
-    node2.add_edge(&helper1, 10);
-    node2.add_edge(&helper2, -5);
-    node2.add_edge(&helper3, 0);
+    EXPECT_FALSE(node2.add_edge(&helper1, 10));
+    EXPECT_FALSE(node2.add_edge(&helper2, -5));
+    EXPECT_FALSE(node2.add_edge(&helper3, 0));
 
     EXPECT_TRUE(node1 == node2);
 
-    EXPECT_TRUE(node1.change_edge_weight(&helper1, 15));
+    EXPECT_FALSE(node1.change_edge_weight(&helper1, 15));
     EXPECT_FALSE(node1 == node2);
 
-    EXPECT_TRUE(node1.change_edge_weight(&helper1, 10));
+    EXPECT_FALSE(node1.change_edge_weight(&helper1, 10));
     EXPECT_TRUE(node1 == node2);
 
     Node helper4("Helper4");
-    node1.add_edge(&helper4, 100);
+    EXPECT_FALSE(node1.add_edge(&helper4, 100));
     EXPECT_FALSE(node1 == node2);
 
     Node different_id("Different");
-    different_id.add_edge(&helper1, 10);
-    different_id.add_edge(&helper2, -5);
-    different_id.add_edge(&helper3, 0);
+    EXPECT_FALSE(different_id.add_edge(&helper1, 10));
+    EXPECT_FALSE(different_id.add_edge(&helper2, -5));
+    EXPECT_FALSE(different_id.add_edge(&helper3, 0));
 
     EXPECT_TRUE(node1.same_id(node2));
     EXPECT_FALSE(node1.same_id(different_id));
 
     Node empty1("Empty");
     Node empty2("Empty");
-    helper1.add_edge(&empty1, 1);
+    EXPECT_FALSE(helper1.add_edge(&empty1, 1));
 
     EXPECT_TRUE(empty1.same_id(empty2));
     EXPECT_FALSE(empty1 == empty2);

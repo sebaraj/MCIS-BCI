@@ -20,9 +20,10 @@
 #include <unordered_map>
 #include <vector>
 
-std::vector<Graph*> BronKerboschSerial::find(const Graph& g1, const Graph& g2) {
+std::expected<std::vector<Graph*>, mcis::AlgorithmError>
+BronKerboschSerial::find(const Graph& g1, const Graph& g2) {
     if (g1.get_num_nodes() == 0 || g2.get_num_nodes() == 0) {
-        return {};
+        return std::unexpected(mcis::AlgorithmError::EMPTY_GRAPH);
     }
 
     ProductGraph product_graph = build_product_graph(g1, g2);

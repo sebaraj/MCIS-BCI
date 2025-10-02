@@ -76,35 +76,38 @@ int Node::get_num_parents() const { return num_parents; }
 
 int Node::get_num_children() const { return num_children; }
 
-bool Node::add_edge(Node* neighbor, int weight) {
-    if (children.find(neighbor) != children.end()) {
-        return (children[neighbor] == weight) ? true : false;
+std::optional<mcis::NodeError> Node::add_edge(Node* neighbor, int weight) {
+    if (children.count(neighbor)) {
+        return (children[neighbor] == weight)
+                   ? std::nullopt
+                   : std::optional(mcis::NodeError::EDGE_ALREADY_EXISTS);
     }
     if (id == neighbor->id) {
-        return false;
+        return mcis::NodeError::SELF_LOOP;
     }
     children[neighbor] = weight;
     num_children++;
     neighbor->num_parents++;
-    return true;
+    return std::nullopt;
 }
 
-bool Node::remove_edge(Node* neighbor) {
-    if (children.find(neighbor) == children.end()) {
-        return false;
+std::optional<mcis::NodeError> Node::remove_edge(Node* neighbor) {
+    if (!children.count(neighbor)) {
+        return mcis::NodeError::EDGE_DOES_NOT_EXIST;
     }
     children.erase(neighbor);
     num_children--;
     neighbor->num_parents--;
-    return true;
+    return std::nullopt;
 }
 
-bool Node::change_edge_weight(Node* neighbor, int new_weight) {
-    if (children.find(neighbor) == children.end()) {
-        return false;
+std::optional<mcis::NodeError> Node::change_edge_weight(Node* neighbor,
+                                                        int new_weight) {
+    if (!children.count(neighbor)) {
+        return mcis::NodeError::EDGE_DOES_NOT_EXIST;
     }
     children[neighbor] = new_weight;
-    return true;
+    return std::nullopt;
 }
 
 bool Node::contains_edge(Node* neighbor) const {
