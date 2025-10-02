@@ -12,10 +12,12 @@
 #ifndef INCLUDE_MCIS_GRAPH_H_
 #define INCLUDE_MCIS_GRAPH_H_
 
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include "mcis/errors.h"
 #include "mcis/node.h"
 
 constexpr int MVM_PARALLEL_THRESHOLD = 100;
@@ -107,26 +109,24 @@ class Graph {
     /**
      * @brief Adds a node with the given ID to the graph.
      * @param id Unique identifier for the new node.
-     * @return True if the node was added successfully, false if a node with the
-     * same ID already exists.
+     * @return An optional error if the node already exists.
      */
-    bool add_node(const std::string& id);
+    std::optional<mcis::GraphError> add_node(const std::string& id);
 
     /**
      * @brief Adds multiple nodes with the given IDs to the graph.
      * @param ids Vector of unique identifiers for the new nodes.
-     * @return True if all nodes were added successfully, false if any node with
-     * the same ID already exists.
+     * @return An optional error if any node already exists.
      */
-    bool add_node_set(const std::vector<std::string>& ids);
+    std::optional<mcis::GraphError> add_node_set(
+        const std::vector<std::string>& ids);
 
     /**
      * @brief Removes the node with the given ID from the graph.
      * @param id Unique identifier of the node to remove.
-     * @return True if the node was removed successfully, false if the node does
-     * not exist.
+     * @return An optional error if the node does not exist.
      */
-    bool remove_node(const std::string& id);
+    std::optional<mcis::GraphError> remove_node(const std::string& id);
 
     /**
      * @brief Adds a directed edge from one node to another with a specified
@@ -134,11 +134,12 @@ class Graph {
      * @param from_id ID of the source node.
      * @param to_id ID of the destination node.
      * @param weight Weight of the edge.
-     * @return True if the edge was added successfully, false if either node
-     * does not exist or the edge already exists.
+     * @return An optional error if either node does not exist or the edge
+     * already exists.
      */
-    bool add_edge(const std::string& from_id, const std::string& to_id,
-                  int weight);
+    std::optional<mcis::GraphError> add_edge(const std::string& from_id,
+                                             const std::string& to_id,
+                                             int weight);
 
     /**
      * @brief Adds directed edges from one node to multiple other nodes with a
@@ -147,32 +148,42 @@ class Graph {
      * @param to_ids Vector of IDs of the children nodes.
      * @param weights Vector of weights of the edges, defaults to 0 if vector is
      * empty.
-     * @return True if all edges were added successfully, false if the source
-     * node does not exist or any edge already exists.
+     * @return An optional error if the source node does not exist or any edge
+     * already exists.
      */
-    bool add_edge_set(const std::string& from_id,
-                      const std::vector<std::string>& to_ids,
-                      const std::vector<int>& weights = {});
+    std::optional<mcis::GraphError> add_edge_set(
+        const std::string& from_id, const std::vector<std::string>& to_ids,
+        const std::vector<int>& weights = {});
 
     /**
      * @brief Removes the directed edge from one node to another.
      * @param from_id ID of the source node.
      * @param to_id ID of the destination node.
-     * @return True if the edge was removed successfully, false if either node
-     * does not exist or the edge does not exist.
+     * @return An optional error if either node does not exist or the edge does
+     * not exist.
      */
-    bool remove_edge(const std::string& from_id, const std::string& to_id);
+    std::optional<mcis::GraphError> remove_edge(const std::string& from_id,
+                                                const std::string& to_id);
 
     /**
      * @brief Changes the weight of the edge from one node to another.
      * @param from_id ID of the source node.
      * @param to_id ID of the destination node.
      * @param new_weight New weight for the edge.
-     * @return True if the weight was changed successfully, false if either node
-     * does not exist or the edge does not exist.
+     * @return An optional error if either node does not exist or the edge does
+     * not exist.
      */
-    bool change_edge_weight(const std::string& from_id,
-                            const std::string& to_id, int new_weight);
+    std::optional<mcis::GraphError> change_edge_weight(
+        const std::string& from_id, const std::string& to_id, int new_weight);
+
+    /**
+     * @brief Changes the tag of the node with the given ID.
+     * @param id Unique identifier of the node.
+     * @param new_tag New tag for the node.
+     * @return An optional error if the node does not exist.
+     */
+    std::optional<mcis::GraphError> set_node_tag(const std::string& id,
+                                                 int new_tag);
 
     /**
      * @brief Retrieves the node identified by the given ID

@@ -139,38 +139,36 @@ void Graph::print_graph() const {
     }
 }
 
-bool Graph::add_node(const std::string& id) {
-    if (nodes.find(id) != nodes.end()) {
-        return false;
+std::optional<mcis::GraphError> Graph::add_node(const std::string& id) {
+    if (nodes.count(id)) {
+        return mcis::GraphError::NODE_ALREADY_EXISTS;
     }
     nodes[id] = new Node(id);
     invalidate_caches();
-    return true;
+    return std::nullopt;
 }
 
-bool Graph::add_node_set(const std::vector<std::string>& ids) {
-    bool all_added = true;
+std::optional<mcis::GraphError> Graph::add_node_set(
+    const std::vector<std::string>& ids) {
     bool any_added = false;
-
     for (const std::string& id : ids) {
-        if (nodes.find(id) == nodes.end()) {
-            nodes[id] = new Node(id);
-            any_added = true;
-        } else {
-            all_added = false;
+        if (nodes.count(id)) {
+            return mcis::GraphError::NODE_ALREADY_EXISTS;
         }
+        nodes[id] = new Node(id);
+        any_added = true;
     }
 
     if (any_added) {
         invalidate_caches();
     }
-    return all_added;
+    return std::nullopt;
 }
 
-bool Graph::remove_node(const std::string& id) {
+std::optional<mcis::GraphError> Graph::remove_node(const std::string& id) {
     auto it = nodes.find(id);
     if (it == nodes.end()) {
-        return false;
+        return mcis::GraphError::NODE_DOES_NOT_EXIST;
     }
 
     Node* node_to_remove = it->second;
@@ -194,76 +192,91 @@ bool Graph::remove_node(const std::string& id) {
     delete node_to_remove;
     nodes.erase(it);
     invalidate_caches();
-    return true;
+    return std::nullopt;
 }
 
-bool Graph::add_edge(const std::string& from_id, const std::string& to_id,
-                     int weight) {
+std::optional<mcis::GraphError> Graph::add_edge(const std::string& from_id,
+                                                const std::string& to_id,
+                                                int weight) {
     auto from_it = nodes.find(from_id);
     auto to_it = nodes.find(to_id);
     if (from_it == nodes.end() || to_it == nodes.end()) {
-        return false;
+        return mcis::GraphError::NODE_DOES_NOT_EXIST;
     }
     is_weighted = is_weighted || (weight != 0);
-    bool result = from_it->second->add_edge(to_it->second, weight);
-    if (result) {
-        invalidate_caches();
+    if (auto error = from_it->second->add_edge(to_it->second, weight)) {
+        return mcis::GraphError::EDGE_ALREADY_EXISTS;
     }
-    return result;
+    invalidate_caches();
+    return std::nullopt;
 }
 
-bool Graph::add_edge_set(const std::string& from_id,
-                         const std::vector<std::string>& to_ids,
-                         const std::vector<int>& weights) {
+std::optional<mcis::GraphError> Graph::add_edge_set(
+    const std::string& from_id, const std::vector<std::string>& to_ids,
+    const std::vector<int>& weights) {
     bool use_zero_weights = weights.empty() || weights.size() != to_ids.size();
     auto from_it = nodes.find(from_id);
     if (from_it == nodes.end()) {
-        return false;
+        return mcis::GraphError::NODE_DOES_NOT_EXIST;
     }
 
-    bool all_added = true;
     bool any_added = false;
 
     for (size_t i = 0; i < to_ids.size(); ++i) {
         int weight = use_zero_weights ? 0 : weights[i];
         auto to_it = nodes.find(to_ids[i]);
-        if (to_it != nodes.end()
-            && from_it->second->add_edge(to_it->second, weight)) {
+        if (to_it != nodes.end()) {
+            if (auto error = from_it->second->add_edge(to_it->second, weight)) {
+                return mcis::GraphError::EDGE_ALREADY_EXISTS;
+            }
             any_added = true;
         } else {
-            all_added = false;
+            return mcis::GraphError::NODE_DOES_NOT_EXIST;
         }
     }
 
     if (any_added) {
         invalidate_caches();
     }
-    return all_added;
+    return std::nullopt;
 }
 
-bool Graph::remove_edge(const std::string& from_id, const std::string& to_id) {
+std::optional<mcis::GraphError> Graph::remove_edge(const std::string& from_id,
+                                                   const std::string& to_id) {
     auto from_it = nodes.find(from_id);
     auto to_it = nodes.find(to_id);
     if (from_it == nodes.end() || to_it == nodes.end()) {
-        return false;
+        return mcis::GraphError::NODE_DOES_NOT_EXIST;
     }
-    bool result = from_it->second->remove_edge(to_it->second);
-    if (result) {
-        invalidate_caches();
+    if (auto error = from_it->second->remove_edge(to_it->second)) {
+        return mcis::GraphError::EDGE_DOES_NOT_EXIST;
     }
-    return result;
+    invalidate_caches();
+    return std::nullopt;
 }
 
-bool Graph::change_edge_weight(const std::string& from_id,
-                               const std::string& to_id, int new_weight) {
+std::optional<mcis::GraphError> Graph::change_edge_weight(
+    const std::string& from_id, const std::string& to_id, int new_weight) {
     auto from_it = nodes.find(from_id);
     auto to_it = nodes.find(to_id);
     if (from_it == nodes.end() || to_it == nodes.end()) {
-        return false;
+        return mcis::GraphError::NODE_DOES_NOT_EXIST;
     }
-    bool result
-        = from_it->second->change_edge_weight(to_it->second, new_weight);
-    return result;
+    if (auto error
+        = from_it->second->change_edge_weight(to_it->second, new_weight)) {
+        return mcis::GraphError::EDGE_DOES_NOT_EXIST;
+    }
+    return std::nullopt;
+}
+
+std::optional<mcis::GraphError> Graph::set_node_tag(const std::string& id,
+                                                    int new_tag) {
+    auto it = nodes.find(id);
+    if (it == nodes.end()) {
+        return mcis::GraphError::NODE_DOES_NOT_EXIST;
+    }
+    it->second->set_tag(new_tag);
+    return std::nullopt;
 }
 
 Node* Graph::get_node(const std::string& id) const {

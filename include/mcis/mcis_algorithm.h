@@ -12,8 +12,10 @@
 #ifndef INCLUDE_MCIS_MCIS_ALGORITHM_H_
 #define INCLUDE_MCIS_MCIS_ALGORITHM_H_
 
+#include <expected>
 #include <vector>
 
+#include "mcis/errors.h"
 #include "mcis/graph.h"
 #include "mcis/mcis_finder.h"
 
@@ -54,10 +56,10 @@ class MCISAlgorithm {
      * @param g2 The second input graph.
      * @param type The type of algorithm to run (from AlgorithmType enum).
      * @return A vector of pointers to Graph objects representing the found MCIS
-     * results.
+     * results, or an error.
      */
-    std::vector<Graph*> run(const Graph& g1, const Graph& g2,
-                            AlgorithmType type);
+    std::expected<std::vector<Graph*>, mcis::AlgorithmError> run(
+        const Graph& g1, const Graph& g2, AlgorithmType type);
 
     /**
      * @brief Runs a user-specified MCIS algorithm on two input graphs.
@@ -66,11 +68,12 @@ class MCISAlgorithm {
      * @param g2 The second input graph.
      * @param algorithm Pointer to the user-specified algorithm instance.
      * @return A vector of pointers to Graph objects representing the found MCIS
-     * results.
+     * results, or an error.
      */
     template <typename T>
         requires std::is_base_of_v<MCISFinder, T>
-    std::vector<Graph*> run(const Graph& g1, const Graph& g2, T* algorithm);
+    std::expected<std::vector<Graph*>, mcis::AlgorithmError> run(
+        const Graph& g1, const Graph& g2, T* algorithm);
 
     /**
      * @brief Runs multiple specified MCIS algorithms on two input graphs.
@@ -79,10 +82,12 @@ class MCISAlgorithm {
      * @param types A vector of algorithm types to run (from AlgorithmType
      * enum).
      * @return A vector of vectors, where each inner vector contains pointers to
-     * Graph objects representing the found MCIS results for each algorithm.
+     * Graph objects representing the found MCIS results for each algorithm, or
+     * an error.
      */
-    std::vector<std::vector<Graph*>> run_many(const Graph& g1, const Graph& g2,
-                                              std::vector<AlgorithmType> types);
+    std::expected<std::vector<std::vector<Graph*>>, mcis::AlgorithmError>
+    run_many(const Graph& g1, const Graph& g2,
+             std::vector<AlgorithmType> types);
 };
 
 #endif  // INCLUDE_MCIS_MCIS_ALGORITHM_H_

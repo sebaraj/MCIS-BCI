@@ -13,8 +13,11 @@
 #define INCLUDE_MCIS_NODE_H_
 
 #include <iostream>
+#include <optional>
 #include <string>
 #include <unordered_map>
+
+#include "mcis/errors.h"
 
 /**
  * @class Node
@@ -43,6 +46,11 @@ class Node {
      * to them.
      */
     std::unordered_map<Node*, int> children;
+
+    /**
+     * @brief Integer tag for grouping nodes.
+     */
+    int tag;
 
  public:
     /**
@@ -91,6 +99,19 @@ class Node {
     std::string get_id() const;
 
     /**
+     * @brief Retrieves the node's tag.
+     * @return The node's tag as an integer.
+     */
+    [[nodiscard]]
+    int get_tag() const;
+
+    /**
+     * @brief Sets the node's tag.
+     * @param new_tag The new tag for the node.
+     */
+    void set_tag(int new_tag);
+
+    /**
      * @brief Retrieves the number of parent nodes (incoming edges).
      * @return The number of parent nodes.
      */
@@ -108,27 +129,25 @@ class Node {
      * @brief Adds a directed edge to a neighbor node with a specified weight.
      * @param neighbor Pointer to the neighbor node.
      * @param weight Weight of the edge.
-     * @return True if the edge was added successfully, false if it already
-     * exists.
+     * @return An optional error if the edge already exists or is a self-loop.
      */
-    bool add_edge(Node* neighbor, int weight);
+    std::optional<mcis::NodeError> add_edge(Node* neighbor, int weight);
 
     /**
      * @brief Removes the directed edge to a neighbor node.
      * @param neighbor Pointer to the neighbor node.
-     * @return True if the edge was removed successfully, false if it does not
-     * exist.
+     * @return An optional error if the edge does not exist.
      */
-    bool remove_edge(Node* neighbor);
+    std::optional<mcis::NodeError> remove_edge(Node* neighbor);
 
     /**
      * @brief Changes the weight of the edge to a neighbor node.
      * @param neighbor Pointer to the neighbor node.
      * @param new_weight New weight for the edge.
-     * @return True if the weight was changed successfully, false if the edge
-     * does not exist.
+     * @return An optional error if the edge does not exist.
      */
-    bool change_edge_weight(Node* neighbor, int new_weight);
+    std::optional<mcis::NodeError> change_edge_weight(Node* neighbor,
+                                                      int new_weight);
 
     /**
      * @brief Checks if there is a directed edge to a neighbor node.

@@ -26,40 +26,43 @@ MCISAlgorithm::~MCISAlgorithm() {
     }
 }
 
-std::vector<Graph*> MCISAlgorithm::run(const Graph& g1, const Graph& g2,
-                                       AlgorithmType type) {
+std::expected<std::vector<Graph*>, mcis::AlgorithmError> MCISAlgorithm::run(
+    const Graph& g1, const Graph& g2, AlgorithmType type) {
     switch (type) {
         case AlgorithmType::BRON_KERBOSCH_SERIAL:
             return algorithms[static_cast<int>(type)]->find(g1, g2);
             break;
         default:
-            std::cerr << "Algorithm type not implemented.\n";
-            return {};
+            return std::unexpected(mcis::AlgorithmError::INVALID_ALGORITHM);
     }
 
-    return {};
+    return std::unexpected(mcis::AlgorithmError::INVALID_ALGORITHM);
 }
 
 template <typename T>
     requires std::is_base_of_v<MCISFinder, T>
-std::vector<Graph*> MCISAlgorithm::run(const Graph& g1, const Graph& g2,
-                                       T* algorithm) {
+std::expected<std::vector<Graph*>, mcis::AlgorithmError> MCISAlgorithm::run(
+    const Graph& g1, const Graph& g2, T* algorithm) {
     return algorithm->find(g1, g2);
 }
 
-std::vector<std::vector<Graph*>> MCISAlgorithm::run_many(
-    const Graph& g1, const Graph& g2, std::vector<AlgorithmType> types) {
+std::expected<std::vector<std::vector<Graph*>>, mcis::AlgorithmError>
+MCISAlgorithm::run_many(const Graph& g1, const Graph& g2,
+                        std::vector<AlgorithmType> types) {
     std::vector<std::vector<Graph*>> results;
     for (const auto& type : types) {
         switch (type) {
-            case AlgorithmType::BRON_KERBOSCH_SERIAL:
-                results.push_back(
-                    algorithms[static_cast<int>(type)]->find(g1, g2));
+            case AlgorithmType::BRON_KERBOSCH_SERIAL: {
+                auto result = algorithms[static_cast<int>(type)]->find(g1, g2);
+                if (result) {
+                    results.push_back(*result);
+                } else {
+                    return std::unexpected(result.error());
+                }
                 break;
+            }
             default:
-                std::cerr << "Algorithm type not implemented.\n";
-                results.push_back({});
-                break;
+                return std::unexpected(mcis::AlgorithmError::INVALID_ALGORITHM);
         }
     }
     return results;
