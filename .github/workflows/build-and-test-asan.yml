@@ -20,7 +20,8 @@ jobs:
           mkdir build
           cd build
           conan profile detect
+          export CXXFLAGS="-fsanitize=address -g"
           conan install .. --build=missing -of . -v
-          cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fsanitize=address -g" -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DOpenMP_ROOT=.
+          cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DOpenMP_ROOT=.
           cmake --build .
           ctest --verbose
