@@ -1,0 +1,48 @@
+# .clang-tidy (Corrected Version)
+#
+# This version fixes the YAML structure for the 'CheckOptions' section.
+# It now uses a direct key-value map as expected by clang-tidy.
+#
+---
+Checks: >
+  -*
+  ,bugprone-*
+  ,cppcoreguidelines-*
+  ,modernize-*
+  ,performance-*
+  ,readability-*
+  ,-cppcoreguidelines-avoid-magic-numbers
+  ,-cppcoreguidelines-pro-bounds-array-to-pointer-decay
+  ,-modernize-use-trailing-return-type
+
+# WarningsAsErrors:
+#   - "bugprone-use-after-move"
+#   - "bugprone-multiple-statement-macro"
+
+HeaderFilterRegex: "^(src/|include/|test/)"
+
+# --- THIS SECTION IS NOW CORRECT ---
+CheckOptions:
+  readability-identifier-naming.ClassCase: CamelCase
+  readability-identifier-naming.StructCase: CamelCase
+  readability-identifier-naming.EnumCase: CamelCase
+  readability-identifier-naming.FunctionCase: CamelCase
+
+  # Naming with a prefix (e.g., kConstant)
+  readability-identifier-naming.EnumConstantCase: CamelCase
+  readability-identifier-naming.EnumConstantPrefix: "k"
+  readability-identifier-naming.GlobalConstantCase: CamelCase
+  readability-identifier-naming.GlobalConstantPrefix: "k"
+
+  # Naming with a prefix (e.g., g_global)
+  readability-identifier-naming.GlobalVariableCase: lower_case
+  readability-identifier-naming.GlobalVariablePrefix: "g_"
+
+  # Naming with a suffix (e.g., member_)
+  readability-identifier-naming.PrivateMemberCase: lower_case
+  readability-identifier-naming.PrivateMemberSuffix: "_"
+
+  # Simple snake_case
+  readability-identifier-naming.PublicMemberCase: lower_case
+  readability-identifier-naming.LocalVariableCase: lower_case
+  readability-identifier-naming.ParameterCase: lower_case
