@@ -28,6 +28,8 @@ enum class GraphError {
     EDGE_ALREADY_EXISTS,
     EDGE_DOES_NOT_EXIST,
     INVALID_PARAMETERS,
+    INVALID_DIMENSIONS,
+    INCONSISTENT_DIMENSIONS,
 };
 
 enum class AlgorithmError {
@@ -66,6 +68,12 @@ inline std::ostream& operator<<(std::ostream& os, const GraphError& error) {
             break;
         case GraphError::INVALID_PARAMETERS:
             os << "GraphError: Invalid parameters provided.";
+            break;
+        case GraphError::INVALID_DIMENSIONS:
+            os << "GraphError: Invalid dimensions provided.";
+            break;
+        case GraphError::INCONSISTENT_DIMENSIONS:
+            os << "GraphError: Inconsistent dimensions provided.";
             break;
     }
     return os;

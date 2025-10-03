@@ -195,8 +195,13 @@ TEST_F(BronKerboschTest, SingleNodeGraphs) {
 
 // Test 5: Complex MVM graphs
 TEST_F(BronKerboschTest, MVMGraphComparison) {
-    Graph mvm_2x2 = Graph::create_mvm_graph_from_dimensions(2, 2);
-    Graph mvm_3x2 = Graph::create_mvm_graph_from_dimensions(3, 2);
+    auto mvm_2x2_expected = Graph::create_mvm_graph_from_dimensions(2, 2);
+    ASSERT_TRUE(mvm_2x2_expected.has_value());
+    Graph mvm_2x2 = mvm_2x2_expected.value();
+
+    auto mvm_3x2_expected = Graph::create_mvm_graph_from_dimensions(3, 2);
+    ASSERT_TRUE(mvm_3x2_expected.has_value());
+    Graph mvm_3x2 = mvm_3x2_expected.value();
 
     if (generate_diagrams) {
         mvm_2x2.generate_diagram_file("mvm_comparison_2x2");
@@ -327,8 +332,13 @@ TEST_F(BronKerboschTest, DisconnectedComponents) {
 
 // Test 9: Performance test with larger MVM graphs
 TEST_F(BronKerboschTest, LargerMVMPerformance) {
-    Graph mvm_4x3 = Graph::create_mvm_graph_from_dimensions(4, 3);
-    Graph mvm_3x4 = Graph::create_mvm_graph_from_dimensions(3, 4);
+    auto mvm_4x3_expected = Graph::create_mvm_graph_from_dimensions(4, 3);
+    ASSERT_TRUE(mvm_4x3_expected.has_value());
+    Graph mvm_4x3 = mvm_4x3_expected.value();
+
+    auto mvm_3x4_expected = Graph::create_mvm_graph_from_dimensions(3, 4);
+    ASSERT_TRUE(mvm_3x4_expected.has_value());
+    Graph mvm_3x4 = mvm_3x4_expected.value();
 
     std::cout << "Testing performance with MVM(4,3) vs MVM(3,4)\n";
     std::cout << "MVM(4,3) has " << mvm_4x3.get_num_nodes() << " nodes\n";

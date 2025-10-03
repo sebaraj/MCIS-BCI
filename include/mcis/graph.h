@@ -266,7 +266,7 @@ class Graph {
      * @return Graph representing the MVM dataflow CDAG
      */
     [[nodiscard]]
-    static Graph create_mvm_graph_from_mat_vec(
+    static std::expected<Graph, mcis::GraphError> create_mvm_graph_from_mat_vec(
         const std::vector<std::vector<std::string>>& mat,
         const std::vector<std::string>& vec);
 
@@ -278,7 +278,8 @@ class Graph {
      * @return Graph representing the MVM dataflow CDAG
      */
     [[nodiscard]]
-    static Graph create_mvm_graph_from_dimensions(int m, int n);
+    static std::expected<Graph, mcis::GraphError>
+    create_mvm_graph_from_dimensions(int m, int n);
 
     /**
      * @brief Static factory method for Haar wavelet transform CDAG creation
