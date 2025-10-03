@@ -12,6 +12,7 @@
 #ifndef INCLUDE_MCIS_GRAPH_H_
 #define INCLUDE_MCIS_GRAPH_H_
 
+#include <expected>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -288,9 +289,10 @@ class Graph {
      * @return Graph representing the Haar wavelet transform CDAG
      */
     [[nodiscard]]
-    static Graph create_haar_wavelet_transform_graph_from_dimensions(int n,
-                                                                     int d,
-                                                                     int k = 1);
+    std::expected<std::vector<Graph>, mcis::GraphError>
+    create_haar_wavelet_transform_graph_from_dimensions(
+        int n, int d, int k = 1,
+        HaarWaveletGraph type = HaarWaveletGraph::BOTH);
 
     /**
      * @brief Static factory method for Haar wavelet transform CDAG creation

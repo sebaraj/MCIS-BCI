@@ -12,18 +12,82 @@
 #include <omp.h>
 
 #include <cmath>
+#include <expected>
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include "mcis/errors.h"
+
 const double SQRT2 = sqrt(2);
 
-Graph Graph::create_haar_wavelet_transform_graph_from_dimensions(int n, int d,
-                                                                 int k) {
+std::expected<std::vector<Graph>, mcis::GraphError>
+Graph::create_haar_wavelet_transform_graph_from_dimensions(
+    int n, int d, int k, HaarWaveletGraph type) {
     if (n <= 0 || d <= 0 || ((n / k) & ((n / k) - 1)) != 0) {
-        return Graph();
+        return std::unexpected(mcis::GraphError::INVALID_PARAMETERS);
     }
-    return Graph();
+    return {std::vector<Graph>{Graph()}};
+    Graph pruned_avg_graph;
+    Graph pruned_coeff_graph;
+#pragma omp parallel sections
+    {
+#pragma omp section
+        {
+            if (type == HaarWaveletGraph::PRUNED_AVERAGE
+                || type == HaarWaveletGraph::BOTH) {
+                std::string avg_node_name, parent_1, parent_2;
+                for (int i = 0; i < d; ++i) {
+                    for (int j = 0; j < n / (1 << i); ++j) {
+                        avg_node_name = "a^" + std::to_string(i + 1) + "_"
+                                        + std::to_string(j + 1);
+                        if (i == 0) {
+                            pruned_avg_graph.add_node(avg_node_name);
+
+                        } else {
+                            pruned_avg_graph.add_node(avg_node_name);
+                            parent_1 = "a^" + std::to_string(i - 1) + "_"
+                                       + std::to_string(2 * j + 1);
+                            parent_2 = "a^" + std::to_string(i - 1) + "_"
+                                       + std::to_string(2 * j + 2);
+                            pruned_avg_graph.add_edge(parent_1, avg_node_name,
+                                                      0);
+                            pruned_avg_graph.add_edge(parent_2, avg_node_name,
+                                                      0);
+                        }
+                    }
+                }
+            }
+        }
+#pragma omp section
+        {
+            if (type == HaarWaveletGraph::PRUNED_COEFFICIENT
+                || type == HaarWaveletGraph::BOTH) {
+                std::string coeff_node_name, parent_1, parent_2;
+                for (int i = 0; i < d; ++i) {
+                    for (int j = 0; j < n / (1 << i); ++j) {
+                        coeff_node_name = "a^" + std::to_string(i + 1) + "_"
+                                          + std::to_string(j + 1);
+                        if (i == 0) {
+                            pruned_coeff_graph.add_node(coeff_node_name);
+
+                        } else {
+                            pruned_coeff_graph.add_node(coeff_node_name);
+                            parent_1 = "a^" + std::to_string(i - 1) + "_"
+                                       + std::to_string(2 * j + 1);
+                            parent_2 = "a^" + std::to_string(i - 1) + "_"
+                                       + std::to_string(2 * j + 2);
+                            pruned_coeff_graph.add_edge(parent_1,
+                                                        coeff_node_name, 0);
+                            pruned_coeff_graph.add_edge(parent_2,
+                                                        coeff_node_name, 0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return std::vector<Graph>{pruned_avg_graph, pruned_coeff_graph};
 }
 
 std::ostream& operator<<(std::ostream& os,

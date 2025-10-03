@@ -27,6 +27,7 @@ enum class GraphError {
     NODE_DOES_NOT_EXIST,
     EDGE_ALREADY_EXISTS,
     EDGE_DOES_NOT_EXIST,
+    INVALID_PARAMETERS,
 };
 
 enum class AlgorithmError {
@@ -62,6 +63,9 @@ inline std::ostream& operator<<(std::ostream& os, const GraphError& error) {
             break;
         case GraphError::EDGE_DOES_NOT_EXIST:
             os << "GraphError: Edge does not exist.";
+            break;
+        case GraphError::INVALID_PARAMETERS:
+            os << "GraphError: Invalid parameters provided.";
             break;
     }
     return os;
