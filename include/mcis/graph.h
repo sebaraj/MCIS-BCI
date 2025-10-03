@@ -22,6 +22,8 @@
 
 constexpr int MVM_PARALLEL_THRESHOLD = 100;
 
+enum class HaarWaveletGraph { BOTH, PRUNED_AVERAGE, PRUNED_COEFFICIENT };
+
 /**
  * @class Graph
  * @brief Represents a directed graph using an adjacency list.
@@ -265,7 +267,7 @@ class Graph {
     [[nodiscard]]
     static Graph create_mvm_graph_from_mat_vec(
         const std::vector<std::vector<std::string>>& mat,
-        const std::vector<std::string>& vec, bool from_dimensions = false);
+        const std::vector<std::string>& vec);
 
     /**
      * @brief Static factory method for MVM dataflow CDAG creation from matrix
@@ -297,8 +299,9 @@ class Graph {
      * @return Graph representing the Haar wavelet transform CDAG
      */
     [[nodiscard]]
-    static Graph create_haar_wavelet_transform_graph_from_signal(
-        const std::vector<double>& signal);
+    static std::vector<Graph> create_haar_wavelet_transform_graph_from_signal(
+        const std::vector<double>& signal, HaarWaveletGraph type
+                                           = HaarWaveletGraph::BOTH);
 };
 
 #endif  // INCLUDE_MCIS_GRAPH_H_

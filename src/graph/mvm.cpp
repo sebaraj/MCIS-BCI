@@ -17,7 +17,7 @@
 
 Graph Graph::create_mvm_graph_from_mat_vec(
     const std::vector<std::vector<std::string>>& mat,
-    const std::vector<std::string>& vec, bool from_dimensions) {
+    const std::vector<std::string>& vec) {
     Graph graph;
     int m = static_cast<int>(mat.size());
     int n = static_cast<int>(vec.size());
@@ -132,5 +132,5 @@ Graph Graph::create_mvm_graph_from_dimensions(int m, int n) {
         }
     }
 
-    return create_mvm_graph_from_mat_vec(mat, vec, true);
+    return create_mvm_graph_from_mat_vec(mat, vec);
 }
