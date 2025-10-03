@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM gcc:15.2.0
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \

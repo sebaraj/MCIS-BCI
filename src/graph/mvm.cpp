@@ -15,14 +15,17 @@
 #include <string>
 #include <vector>
 
-Graph Graph::create_mvm_graph_from_mat_vec(
+std::expected<Graph, mcis::GraphError> Graph::create_mvm_graph_from_mat_vec(
     const std::vector<std::vector<std::string>>& mat,
-    const std::vector<std::string>& vec, bool from_dimensions) {
+    const std::vector<std::string>& vec) {
     Graph graph;
     int m = static_cast<int>(mat.size());
     int n = static_cast<int>(vec.size());
-    if (m <= 0 || n <= 0 || mat[0].size() != static_cast<size_t>(n)) {
-        return graph;
+    if (m <= 0 || n <= 0) {
+        return std::unexpected(mcis::GraphError::INVALID_DIMENSIONS);
+    }
+    if (mat[0].size() != static_cast<size_t>(n)) {
+        return std::unexpected(mcis::GraphError::INCONSISTENT_DIMENSIONS);
     }
 
     graph.reserve_nodes((m * n) + n + (m * n) + (m * (n - 1)));
@@ -104,9 +107,10 @@ Graph Graph::create_mvm_graph_from_mat_vec(
     return graph;
 }
 
-Graph Graph::create_mvm_graph_from_dimensions(int m, int n) {
+std::expected<Graph, mcis::GraphError> Graph::create_mvm_graph_from_dimensions(
+    int m, int n) {
     if (m <= 0 || n <= 0) {
-        return Graph();
+        return std::unexpected(mcis::GraphError::INVALID_DIMENSIONS);
     }
     std::vector<std::vector<std::string>> mat(m, std::vector<std::string>(n));
     std::vector<std::string> vec(n);
@@ -132,5 +136,5 @@ Graph Graph::create_mvm_graph_from_dimensions(int m, int n) {
         }
     }
 
-    return create_mvm_graph_from_mat_vec(mat, vec, true);
+    return create_mvm_graph_from_mat_vec(mat, vec);
 }

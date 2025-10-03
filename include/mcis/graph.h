@@ -12,6 +12,7 @@
 #ifndef INCLUDE_MCIS_GRAPH_H_
 #define INCLUDE_MCIS_GRAPH_H_
 
+#include <expected>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -21,6 +22,8 @@
 #include "mcis/node.h"
 
 constexpr int MVM_PARALLEL_THRESHOLD = 100;
+
+enum class HaarWaveletGraph { BOTH, PRUNED_AVERAGE, PRUNED_COEFFICIENT };
 
 /**
  * @class Graph
@@ -263,9 +266,9 @@ class Graph {
      * @return Graph representing the MVM dataflow CDAG
      */
     [[nodiscard]]
-    static Graph create_mvm_graph_from_mat_vec(
+    static std::expected<Graph, mcis::GraphError> create_mvm_graph_from_mat_vec(
         const std::vector<std::vector<std::string>>& mat,
-        const std::vector<std::string>& vec, bool from_dimensions = false);
+        const std::vector<std::string>& vec);
 
     /**
      * @brief Static factory method for MVM dataflow CDAG creation from matrix
@@ -275,7 +278,33 @@ class Graph {
      * @return Graph representing the MVM dataflow CDAG
      */
     [[nodiscard]]
-    static Graph create_mvm_graph_from_dimensions(int m, int n);
+    static std::expected<Graph, mcis::GraphError>
+    create_mvm_graph_from_dimensions(int m, int n);
+
+    /**
+     * @brief Static factory method for Haar wavelet transform CDAG creation
+     * from dimensions
+     * @param n, s.t. n is an element of {k * 2^d | k is an integer >= 1, d is
+     * an integer >= 0}
+     * @param d level of DWT graph (integer >= 1)
+     * @return Graph representing the Haar wavelet transform CDAG
+     */
+    [[nodiscard]]
+    std::expected<std::vector<Graph>, mcis::GraphError>
+    create_haar_wavelet_transform_graph_from_dimensions(
+        int n, int d, int k = 1,
+        HaarWaveletGraph type = HaarWaveletGraph::BOTH);
+
+    /**
+     * @brief Static factory method for Haar wavelet transform CDAG creation
+     * from signal
+     * @param signal Input signal as a vector of doubles
+     * @return Graph representing the Haar wavelet transform CDAG
+     */
+    [[nodiscard]]
+    static std::vector<Graph> create_haar_wavelet_transform_graph_from_signal(
+        const std::vector<double>& signal, HaarWaveletGraph type
+                                           = HaarWaveletGraph::BOTH);
 };
 
 #endif  // INCLUDE_MCIS_GRAPH_H_
