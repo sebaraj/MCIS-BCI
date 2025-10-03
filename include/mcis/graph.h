@@ -276,6 +276,29 @@ class Graph {
      */
     [[nodiscard]]
     static Graph create_mvm_graph_from_dimensions(int m, int n);
+
+    /**
+     * @brief Static factory method for Haar wavelet transform CDAG creation
+     * from dimensions
+     * @param n, s.t. n is an element of {k * 2^d | k is an integer >= 1, d is
+     * an integer >= 0}
+     * @param d level of DWT graph (integer >= 1)
+     * @return Graph representing the Haar wavelet transform CDAG
+     */
+    [[nodiscard]]
+    static Graph create_haar_wavelet_transform_graph_from_dimensions(int n,
+                                                                     int d,
+                                                                     int k = 1);
+
+    /**
+     * @brief Static factory method for Haar wavelet transform CDAG creation
+     * from signal
+     * @param signal Input signal as a vector of doubles
+     * @return Graph representing the Haar wavelet transform CDAG
+     */
+    [[nodiscard]]
+    static Graph create_haar_wavelet_transform_graph_from_signal(
+        const std::vector<double>& signal);
 };
 
 #endif  // INCLUDE_MCIS_GRAPH_H_
