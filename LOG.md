@@ -77,6 +77,7 @@
 - [x] Added unit tests for Haar wavelet transform graph factory function
 - [x] Bumped github workflow C++ compiler to gcc 15.2.0
 - [x] Caught LOG.md up to date
+- [x] Implemented FFT graph factory function + unit tests
 
 #### October 4, 2025
 
