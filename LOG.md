@@ -7,144 +7,89 @@
 
 ## September 2025
 
-### Date: **\*\***\_\_\_**\*\***
+#### September 8, 2025
 
-#### Tasks Completed:
+- [x] Cmake, Conan, Ninja, Google Test setup
+- [x] Initial node, graph, and algorithm interface implementations
 
-- [ ]
-- [ ]
+#### September 9, 2025
 
-#### Progress Notes:
+- [x] Fixed cmake build issues
+- [x] Implemented graph diagraph (graphviz) generation
 
->
+#### September 10, 2025
 
----
+- [x] Added edge operations and graph manipulation methods
+- [x] Started gtest unit test outline
 
-### Date: **\*\***\_\_\_**\*\***
+#### September 15, 2025
 
-#### Tasks Completed:
+- [x] Fixed linking issues with gtest
 
-- [ ]
-- [ ]
+#### September 18, 2025
 
-#### Progress Notes:
+- [x] Constructed unit test suite for node and graph classes
+- [x] Added github workflow and build and test code on push/pull request to main
+- [x] Implemented class-property-caching for graphs
+- [x] Started matrix-vector multiplication factory function
 
->
+#### September 19, 2025
+
+- [x] Added README.md + LOG.md
+- [x] Unified naming scheme across project
+- [x] Completed matrix-vector multiplication factory function
+- [x] Added OpenMP for parallel MVM construction
+
+#### September 20, 2025
+
+- [x] Fixed graphviz builder function
+- [x] Implemented unit tests for MVM factory function
+- [x] Added cpp-linter github and automatic release workflows
+- [x] Updated README.md
+
+#### September 21, 2025
+
+- [x] Implemented user-created MCIS finding algorthm interface
+- [x] Fixed MVM factory function bugs
+- [x] Made codebase cpp-linter compliant
+- [x] Generalized graph visualization function
+- [x] Implemented Bron-Kerbosch algorithm with simple heuristics for MCIS finding
+- [x] Added unit tests for Bron-Kerbosch
+- [x] Added doxygen github workflow
+
+#### September 22, 2025
+
+- [x] Bumped codebase to C++23
 
 ---
 
 ## October 2025
 
-### Date: **\*\***\_\_\_**\*\***
+#### October 2, 2025
 
-#### Tasks Completed:
+- [x] Implemented node tagging
+- [x] Refactored codebase to use expected/optional for error handling
+- [x] Haar wavelet transform graph factory function outline
 
-- [ ]
-- [ ]
+#### October 3, 2025
 
-#### Progress Notes:
+- [x] Finished Haar wavelet transform graph factory functions from a signal vector and dimensions
+- [x] Added unit tests for Haar wavelet transform graph factory function
+- [x] Bumped github workflow C++ compiler to gcc 15.2.0
+- [x] Caught LOG.md up to date
 
->
+#### October 4, 2025
 
----
-
-### Date: **\*\***\_\_\_**\*\***
-
-#### Tasks Completed:
-
-- [ ]
-- [ ]
-
-#### Progress Notes:
-
->
+- [ ] Implemented subgraph extraction based on tagged nodes
+- [ ] Added modified Bron-Kerbosch algorithm to find MCIS based on tags
+- [ ] Modified Bron-Kerbosch to find MCIS from among two graphs to among multiple graphs
 
 ---
 
 ## November 2025
 
-### Date: **\*\***\_\_\_**\*\***
-
-#### Tasks Completed:
-
-- [ ]
-- [ ]
-
-#### Progress Notes:
-
->
-
----
-
-### Date: **\*\***\_\_\_**\*\***
-
-#### Tasks Completed:
-
-- [ ]
-- [ ]
-
-#### Progress Notes:
-
->
-
 ---
 
 ## December 2025
 
-### Date: **\*\***\_\_\_**\*\***
-
-#### Tasks Completed:
-
-- [ ]
-- [ ]
-
-#### Progress Notes:
-
->
-
 ---
-
-### Date: **\*\***\_\_\_**\*\***
-
-#### Tasks Completed:
-
-- [ ]
-- [ ]
-
-#### Progress Notes:
-
->
-
----
-
-## Major Milestones
-
-### Thesis Proposal Completion
-
-**Date:** September 11, 2025\
-**Status:** Complete\
-**Notes:** Successfully submitted comprehensive thesis proposal outlining MCIS framework for BCI accelerator design.
-
----
-
-### Testing Framework Foundation
-
-**Target Date:** September 14, 2025\
-**Status:** Complete\
-**Notes:** Implementing core C++ library structure with CDAG representation and Google Test integration.
-
----
-
-### Brute Force MCIS Algorithm
-
-**Target Date:** September 21, 2025\
-**Status:** Pending\
-**Notes:** Implementation of baseline exact solver using maximum clique reduction.
-
----
-
-### BCI Dataset Generation
-
-**Target Date:** October 10, 2025\
-**Status:** Pending\
-**Notes:** Creation of comprehensive CDAG dataset representing DWT, FFT, and MVM workloads.
