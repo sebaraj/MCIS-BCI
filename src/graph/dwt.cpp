@@ -27,7 +27,6 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
     if (n <= 0 || d <= 0 || ((n / k) & ((n / k) - 1)) != 0) {
         return std::unexpected(mcis::GraphError::INVALID_PARAMETERS);
     }
-    return {std::vector<Graph>{Graph()}};
     Graph pruned_avg_graph;
     Graph pruned_coeff_graph;
 #pragma omp parallel sections
@@ -87,7 +86,13 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
             }
         }
     }
-    return std::vector<Graph>{pruned_avg_graph, pruned_coeff_graph};
+    if (type == HaarWaveletGraph::PRUNED_AVERAGE) {
+        return std::vector<Graph>{pruned_avg_graph};
+    } else if (type == HaarWaveletGraph::PRUNED_COEFFICIENT) {
+        return std::vector<Graph>{pruned_coeff_graph};
+    } else {
+        return std::vector<Graph>{pruned_avg_graph, pruned_coeff_graph};
+    }
 }
 
 std::ostream& operator<<(std::ostream& os,
@@ -107,11 +112,12 @@ std::ostream& operator<<(std::ostream& os,
     return os;
 }
 
-std::vector<Graph> Graph::create_haar_wavelet_transform_graph_from_signal(
+std::expected<std::vector<Graph>, mcis::GraphError>
+Graph::create_haar_wavelet_transform_graph_from_signal(
     const std::vector<double>& signal, HaarWaveletGraph type) {
     int N = static_cast<int>(signal.size());
-    if (N <= 0) {
-        return {Graph()};
+    if (N <= 0 || (N & (N - 1)) != 0) {
+        return std::unexpected(mcis::GraphError::INVALID_PARAMETERS);
     }
     int d = static_cast<int>(log2(N));
     Graph pruned_avg_graph;
@@ -238,5 +244,11 @@ std::vector<Graph> Graph::create_haar_wavelet_transform_graph_from_signal(
     std::cout << "Averages:\n" << averages;
     std::cout << "Coefficients:\n" << coefficients;
 
-    return {pruned_avg_graph, pruned_coeff_graph};
+    if (type == HaarWaveletGraph::PRUNED_AVERAGE) {
+        return std::vector<Graph>{pruned_avg_graph};
+    } else if (type == HaarWaveletGraph::PRUNED_COEFFICIENT) {
+        return std::vector<Graph>{pruned_coeff_graph};
+    } else {
+        return std::vector<Graph>{pruned_avg_graph, pruned_coeff_graph};
+    }
 }
