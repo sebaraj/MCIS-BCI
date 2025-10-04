@@ -64,6 +64,13 @@ TEST_F(DWTTest, DWTGraphCreation_n16_d4) {
     ASSERT_TRUE(dwt_graph_expected.has_value());
     std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
     EXPECT_EQ(dwt_graphs.size(), 2);
+
+    if (generate_diagrams) {
+        int i = 0;
+        for (const auto& g : dwt_graphs) {
+            g.generate_diagram_file("dwt_n16_d4_" + std::to_string(i++));
+        }
+    }
 }
 
 // Test 4: Test from_signal constructor
@@ -72,6 +79,13 @@ TEST_F(DWTTest, DWTGraphFromSignal) {
     auto dwt_graphs
         = Graph::create_haar_wavelet_transform_graph_from_signal(signal);
     EXPECT_EQ(dwt_graphs.size(), 2);
+
+    if (generate_diagrams) {
+        int i = 0;
+        for (const auto& g : dwt_graphs) {
+            g.generate_diagram_file("dwt_from_signal_" + std::to_string(i++));
+        }
+    }
 }
 
 // Test 5: Test PRUNED_AVERAGE graph type
@@ -83,6 +97,14 @@ TEST_F(DWTTest, DWTGraphPrunedAverage) {
     ASSERT_TRUE(dwt_graph_expected.has_value());
     std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
     EXPECT_EQ(dwt_graphs.size(), 1);
+
+    if (generate_diagrams) {
+        int i = 0;
+        for (const auto& g : dwt_graphs) {
+            g.generate_diagram_file("dwt_pruned_average_"
+                                    + std::to_string(i++));
+        }
+    }
 }
 
 // Test 6: Test PRUNED_COEFFICIENT graph type
@@ -94,4 +116,12 @@ TEST_F(DWTTest, DWTGraphPrunedCoefficient) {
     ASSERT_TRUE(dwt_graph_expected.has_value());
     std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
     EXPECT_EQ(dwt_graphs.size(), 1);
+
+    if (generate_diagrams) {
+        int i = 0;
+        for (const auto& g : dwt_graphs) {
+            g.generate_diagram_file("dwt_pruned_coefficient_"
+                                    + std::to_string(i++));
+        }
+    }
 }

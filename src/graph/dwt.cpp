@@ -27,7 +27,6 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
     if (n <= 0 || d <= 0 || ((n / k) & ((n / k) - 1)) != 0) {
         return std::unexpected(mcis::GraphError::INVALID_PARAMETERS);
     }
-    return {std::vector<Graph>{Graph()}};
     Graph pruned_avg_graph;
     Graph pruned_coeff_graph;
 #pragma omp parallel sections

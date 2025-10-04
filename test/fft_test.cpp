@@ -12,11 +12,25 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <cstdlib>
 #include <string>
 
 #include "mcis/graph.h"
 
-TEST(FFTGraph, InvalidParameters) {
+class FFTGraphTest : public ::testing::Test {
+ protected:
+    void SetUp() override {
+        generate_diagrams
+            = std::getenv("GENERATE_DIAGRAMS") != nullptr
+              && std::string(std::getenv("GENERATE_DIAGRAMS")) == "1";
+    }
+
+    void TearDown() override {}
+
+    bool generate_diagrams = false;
+};
+
+TEST_F(FFTGraphTest, InvalidParameters) {
     auto graph_or_error = Graph::create_fft_graph_from_dimensions(0);
     EXPECT_FALSE(graph_or_error.has_value());
 
@@ -24,7 +38,7 @@ TEST(FFTGraph, InvalidParameters) {
     EXPECT_FALSE(graph_or_error.has_value());
 }
 
-TEST(FFTGraph, N2_GraphStructure) {
+TEST_F(FFTGraphTest, N2_GraphStructure) {
     auto graph_or_error = Graph::create_fft_graph_from_dimensions(2);
     ASSERT_TRUE(graph_or_error.has_value());
     auto graph = graph_or_error.value();
@@ -46,9 +60,13 @@ TEST(FFTGraph, N2_GraphStructure) {
 
     EXPECT_TRUE(graph.get_node("X_0")->check_parent("s1_0"));
     EXPECT_TRUE(graph.get_node("X_1")->check_parent("s1_1"));
+
+    if (generate_diagrams) {
+        graph.generate_diagram_file("fft_n2");
+    }
 }
 
-TEST(FFTGraph, N4_GraphStructure) {
+TEST_F(FFTGraphTest, N4_GraphStructure) {
     auto graph_or_error = Graph::create_fft_graph_from_dimensions(4);
     ASSERT_TRUE(graph_or_error.has_value());
     auto graph = graph_or_error.value();
@@ -69,9 +87,13 @@ TEST(FFTGraph, N4_GraphStructure) {
     EXPECT_TRUE(graph.get_node("s2_0")->check_parent("s1_0"));
     EXPECT_TRUE(graph.get_node("s2_1")->check_parent("s1_1"));
     EXPECT_TRUE(graph.get_node("X_0")->check_parent("s2_0"));
+
+    if (generate_diagrams) {
+        graph.generate_diagram_file("fft_n4");
+    }
 }
 
-TEST(FFTGraph, N8_GraphStructure) {
+TEST_F(FFTGraphTest, N8_GraphStructure) {
     auto graph_or_error = Graph::create_fft_graph_from_dimensions(8);
     ASSERT_TRUE(graph_or_error.has_value());
     auto graph = graph_or_error.value();
@@ -96,4 +118,8 @@ TEST(FFTGraph, N8_GraphStructure) {
     EXPECT_TRUE(graph.get_node("s3_0")->check_parent("s2_0"));
     EXPECT_TRUE(graph.get_node("s3_0")->check_parent("s2_1"));
     EXPECT_TRUE(graph.get_node("X_0")->check_parent("s3_0"));
+
+    if (generate_diagrams) {
+        graph.generate_diagram_file("fft_n8");
+    }
 }
