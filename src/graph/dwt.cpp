@@ -87,7 +87,13 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
             }
         }
     }
-    return std::vector<Graph>{pruned_avg_graph, pruned_coeff_graph};
+    if (type == HaarWaveletGraph::PRUNED_AVERAGE) {
+        return std::vector<Graph>{pruned_avg_graph};
+    } else if (type == HaarWaveletGraph::PRUNED_COEFFICIENT) {
+        return std::vector<Graph>{pruned_coeff_graph};
+    } else {
+        return std::vector<Graph>{pruned_avg_graph, pruned_coeff_graph};
+    }
 }
 
 std::ostream& operator<<(std::ostream& os,

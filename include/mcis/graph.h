@@ -305,6 +305,15 @@ class Graph {
     static std::vector<Graph> create_haar_wavelet_transform_graph_from_signal(
         const std::vector<double>& signal, HaarWaveletGraph type
                                            = HaarWaveletGraph::BOTH);
+
+    /**
+     * @brief Static factory method for FFT CDAG creation from dimensions
+     * @param n Number of points in the FFT, must be a power of 2
+     * @return Graph representing the FFT CDAG
+     */
+    [[nodiscard]]
+    static std::expected<Graph, mcis::GraphError>
+    create_fft_graph_from_dimensions(int n);
 };
 
 #endif  // INCLUDE_MCIS_GRAPH_H_

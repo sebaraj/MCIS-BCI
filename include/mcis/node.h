@@ -48,6 +48,12 @@ class Node {
     std::unordered_map<Node*, int> children;
 
     /**
+     * @brief Map of parent nodes to the weights of the directed edges
+     * connecting from them.
+     */
+    std::unordered_map<Node*, int> parents;
+
+    /**
      * @brief Integer tag for grouping nodes.
      */
     int tag;
@@ -141,6 +147,21 @@ class Node {
     std::optional<mcis::NodeError> remove_edge(Node* neighbor);
 
     /**
+     * @brief Adds a directed edge from a parent node with a specified weight.
+     * @param parent Pointer to the parent node.
+     * @param weight Weight of the edge.
+     * @return An optional error if the edge already exists or is a self-loop.
+     */
+    std::optional<mcis::NodeError> add_parent(Node* parent, int weight);
+
+    /**
+     * @brief Removes the directed edge from a parent node.
+     * @param parent Pointer to the parent node.
+     * @return An optional error if the edge does not exist.
+     */
+    std::optional<mcis::NodeError> remove_parent(Node* parent);
+
+    /**
      * @brief Changes the weight of the edge to a neighbor node.
      * @param neighbor Pointer to the neighbor node.
      * @param new_weight New weight for the edge.
@@ -156,6 +177,14 @@ class Node {
      */
     [[nodiscard]]
     bool contains_edge(Node* neighbor) const;
+
+    /**
+     * @brief Checks if the given node is a parent of this node.
+     * @param parent_id The ID of the potential parent node.
+     * @return True if the given node is a parent, false otherwise.
+     */
+    [[nodiscard]]
+    bool check_parent(const std::string& parent_id) const;
 
     /**
      * @brief Checks if the node is a source (no incoming edges).

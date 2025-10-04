@@ -44,6 +44,7 @@ Node::Node(Node&& other) noexcept
       num_parents(other.num_parents),
       num_children(other.num_children),
       children(std::move(other.children)),
+      parents(std::move(other.parents)),
       tag(other.tag) {
     other.num_parents = 0;
     other.num_children = 0;
@@ -56,6 +57,7 @@ Node& Node::operator=(Node&& other) noexcept {
         num_parents = other.num_parents;
         num_children = other.num_children;
         children = std::move(other.children);
+        parents = std::move(other.parents);
         tag = other.tag;
         other.num_parents = 0;
         other.num_children = 0;
@@ -64,7 +66,10 @@ Node& Node::operator=(Node&& other) noexcept {
     return *this;
 }
 
-Node::~Node() { children.clear(); }
+Node::~Node() {
+    children.clear();
+    parents.clear();
+}
 
 std::string Node::get_id() const { return id; }
 
@@ -87,7 +92,7 @@ std::optional<mcis::NodeError> Node::add_edge(Node* neighbor, int weight) {
     }
     children[neighbor] = weight;
     num_children++;
-    neighbor->num_parents++;
+    neighbor->add_parent(this, weight);
     return std::nullopt;
 }
 
@@ -97,8 +102,40 @@ std::optional<mcis::NodeError> Node::remove_edge(Node* neighbor) {
     }
     children.erase(neighbor);
     num_children--;
-    neighbor->num_parents--;
+    neighbor->remove_parent(this);
     return std::nullopt;
+}
+
+std::optional<mcis::NodeError> Node::add_parent(Node* parent, int weight) {
+    if (parents.count(parent)) {
+        return (parents[parent] == weight)
+                   ? std::nullopt
+                   : std::optional(mcis::NodeError::EDGE_ALREADY_EXISTS);
+    }
+    if (id == parent->id) {
+        return mcis::NodeError::SELF_LOOP;
+    }
+    parents[parent] = weight;
+    num_parents++;
+    return std::nullopt;
+}
+
+std::optional<mcis::NodeError> Node::remove_parent(Node* parent) {
+    if (!parents.count(parent)) {
+        return mcis::NodeError::EDGE_DOES_NOT_EXIST;
+    }
+    parents.erase(parent);
+    num_parents--;
+    return std::nullopt;
+}
+
+bool Node::check_parent(const std::string& parent_id) const {
+    for (const auto& [parent, weight] : parents) {
+        if (parent->get_id() == parent_id) {
+            return true;
+        }
+    }
+    return false;
 }
 
 std::optional<mcis::NodeError> Node::change_edge_weight(Node* neighbor,

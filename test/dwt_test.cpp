@@ -55,3 +55,43 @@ TEST_F(DWTTest, DWTGraphInvalidParameters) {
     ASSERT_FALSE(dwt_graph_expected.has_value());
     ASSERT_EQ(dwt_graph_expected.error(), mcis::GraphError::INVALID_PARAMETERS);
 }
+
+// Test 3: Create DWT graph with n=16, d=4
+TEST_F(DWTTest, DWTGraphCreation_n16_d4) {
+    Graph graph;
+    auto dwt_graph_expected
+        = graph.create_haar_wavelet_transform_graph_from_dimensions(16, 4);
+    ASSERT_TRUE(dwt_graph_expected.has_value());
+    std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
+    EXPECT_EQ(dwt_graphs.size(), 2);
+}
+
+// Test 4: Test from_signal constructor
+TEST_F(DWTTest, DWTGraphFromSignal) {
+    std::vector<double> signal = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+    auto dwt_graphs
+        = Graph::create_haar_wavelet_transform_graph_from_signal(signal);
+    EXPECT_EQ(dwt_graphs.size(), 2);
+}
+
+// Test 5: Test PRUNED_AVERAGE graph type
+TEST_F(DWTTest, DWTGraphPrunedAverage) {
+    Graph graph;
+    auto dwt_graph_expected
+        = graph.create_haar_wavelet_transform_graph_from_dimensions(
+            8, 3, 1, HaarWaveletGraph::PRUNED_AVERAGE);
+    ASSERT_TRUE(dwt_graph_expected.has_value());
+    std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
+    EXPECT_EQ(dwt_graphs.size(), 1);
+}
+
+// Test 6: Test PRUNED_COEFFICIENT graph type
+TEST_F(DWTTest, DWTGraphPrunedCoefficient) {
+    Graph graph;
+    auto dwt_graph_expected
+        = graph.create_haar_wavelet_transform_graph_from_dimensions(
+            8, 3, 1, HaarWaveletGraph::PRUNED_COEFFICIENT);
+    ASSERT_TRUE(dwt_graph_expected.has_value());
+    std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
+    EXPECT_EQ(dwt_graphs.size(), 1);
+}
