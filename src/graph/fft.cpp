@@ -44,14 +44,14 @@ std::expected<Graph, mcis::GraphError> Graph::create_fft_graph_from_dimensions(
     }
 
     for (int stage = 1; stage <= stages; ++stage) {
-        int num_butterflies = 1 << (stage - 1);
-        int butterfly_size = n / num_butterflies;
-        int half_size = butterfly_size / 2;
+        int group_size = 1 << stage;
+        int half_group_size = group_size / 2;
+        int num_groups = n / group_size;
 
-        for (int i = 0; i < num_butterflies; ++i) {
-            for (int j = 0; j < half_size; ++j) {
-                int top_idx = i * butterfly_size + j;
-                int bottom_idx = top_idx + half_size;
+        for (int group = 0; group < num_groups; ++group) {
+            for (int i = 0; i < half_group_size; ++i) {
+                int top_idx = group * group_size + i;
+                int bottom_idx = top_idx + half_group_size;
 
                 std::string top_node_in
                     = (stage == 1) ? "x_" + std::to_string(top_idx)
@@ -75,11 +75,22 @@ std::expected<Graph, mcis::GraphError> Graph::create_fft_graph_from_dimensions(
         }
     }
 
+    auto reverse_bits = [&](int val) {
+        int reversed_val = 0;
+        for (int i = 0; i < stages; ++i) {
+            if ((val >> i) & 1) {
+                reversed_val |= 1 << (stages - 1 - i);
+            }
+        }
+        return reversed_val;
+    };
+
     for (int i = 0; i < n; ++i) {
         std::string output_node = "X_" + std::to_string(i);
         graph.add_node(output_node);
+        int reversed_idx = reverse_bits(i);
         std::string last_stage_node
-            = "s" + std::to_string(stages) + "_" + std::to_string(i);
+            = "s" + std::to_string(stages) + "_" + std::to_string(reversed_idx);
         graph.add_edge(last_stage_node, output_node, 0);
     }
 

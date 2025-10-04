@@ -52,7 +52,6 @@ TEST_F(FFTGraphTest, N2_GraphStructure) {
     EXPECT_NE(graph.get_node("X_0"), nullptr);
     EXPECT_NE(graph.get_node("X_1"), nullptr);
 
-    // Check edges for butterfly
     EXPECT_TRUE(graph.get_node("s1_0")->check_parent("x_0"));
     EXPECT_TRUE(graph.get_node("s1_0")->check_parent("x_1"));
     EXPECT_TRUE(graph.get_node("s1_1")->check_parent("x_0"));
@@ -83,10 +82,19 @@ TEST_F(FFTGraphTest, N4_GraphStructure) {
     EXPECT_NE(graph.get_node("X_3"), nullptr);
 
     EXPECT_TRUE(graph.get_node("s1_0")->check_parent("x_0"));
+    EXPECT_TRUE(graph.get_node("s1_0")->check_parent("x_2"));
+    EXPECT_TRUE(graph.get_node("s1_2")->check_parent("x_0"));
     EXPECT_TRUE(graph.get_node("s1_2")->check_parent("x_2"));
+
     EXPECT_TRUE(graph.get_node("s2_0")->check_parent("s1_0"));
+    EXPECT_TRUE(graph.get_node("s2_0")->check_parent("s1_1"));
+    EXPECT_TRUE(graph.get_node("s2_1")->check_parent("s1_0"));
     EXPECT_TRUE(graph.get_node("s2_1")->check_parent("s1_1"));
+
     EXPECT_TRUE(graph.get_node("X_0")->check_parent("s2_0"));
+    EXPECT_TRUE(graph.get_node("X_1")->check_parent("s2_2"));
+    EXPECT_TRUE(graph.get_node("X_2")->check_parent("s2_1"));
+    EXPECT_TRUE(graph.get_node("X_3")->check_parent("s2_3"));
 
     if (generate_diagrams) {
         graph.generate_diagram_file("fft_n4");
@@ -113,11 +121,27 @@ TEST_F(FFTGraphTest, N8_GraphStructure) {
 
     EXPECT_TRUE(graph.get_node("s1_0")->check_parent("x_0"));
     EXPECT_TRUE(graph.get_node("s1_0")->check_parent("x_4"));
+    EXPECT_TRUE(graph.get_node("s1_4")->check_parent("x_0"));
+    EXPECT_TRUE(graph.get_node("s1_4")->check_parent("x_4"));
+
     EXPECT_TRUE(graph.get_node("s2_0")->check_parent("s1_0"));
     EXPECT_TRUE(graph.get_node("s2_0")->check_parent("s1_2"));
+    EXPECT_TRUE(graph.get_node("s2_2")->check_parent("s1_0"));
+    EXPECT_TRUE(graph.get_node("s2_2")->check_parent("s1_2"));
+
     EXPECT_TRUE(graph.get_node("s3_0")->check_parent("s2_0"));
     EXPECT_TRUE(graph.get_node("s3_0")->check_parent("s2_1"));
+    EXPECT_TRUE(graph.get_node("s3_1")->check_parent("s2_0"));
+    EXPECT_TRUE(graph.get_node("s3_1")->check_parent("s2_1"));
+
     EXPECT_TRUE(graph.get_node("X_0")->check_parent("s3_0"));
+    EXPECT_TRUE(graph.get_node("X_1")->check_parent("s3_4"));
+    EXPECT_TRUE(graph.get_node("X_2")->check_parent("s3_2"));
+    EXPECT_TRUE(graph.get_node("X_3")->check_parent("s3_6"));
+    EXPECT_TRUE(graph.get_node("X_4")->check_parent("s3_1"));
+    EXPECT_TRUE(graph.get_node("X_5")->check_parent("s3_5"));
+    EXPECT_TRUE(graph.get_node("X_6")->check_parent("s3_3"));
+    EXPECT_TRUE(graph.get_node("X_7")->check_parent("s3_7"));
 
     if (generate_diagrams) {
         graph.generate_diagram_file("fft_n8");

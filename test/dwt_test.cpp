@@ -62,8 +62,8 @@ TEST_F(DWTTest, DWTGraphCreation_n16_d4) {
     auto dwt_graph_expected
         = graph.create_haar_wavelet_transform_graph_from_dimensions(16, 4);
     ASSERT_TRUE(dwt_graph_expected.has_value());
-    std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
-    EXPECT_EQ(dwt_graphs.size(), 2);
+    auto dwt_graphs = dwt_graph_expected.value();
+    EXPECT_EQ(dwt_graphs.size(), static_cast<size_t>(2));
 
     if (generate_diagrams) {
         int i = 0;
@@ -78,7 +78,7 @@ TEST_F(DWTTest, DWTGraphFromSignal) {
     std::vector<double> signal = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
     auto dwt_graphs
         = Graph::create_haar_wavelet_transform_graph_from_signal(signal);
-    EXPECT_EQ(dwt_graphs.size(), 2);
+    EXPECT_EQ(dwt_graphs.size(), static_cast<size_t>(2));
 
     if (generate_diagrams) {
         int i = 0;
