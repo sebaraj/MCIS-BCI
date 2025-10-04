@@ -302,7 +302,8 @@ class Graph {
      * @return Graph representing the Haar wavelet transform CDAG
      */
     [[nodiscard]]
-    static std::vector<Graph> create_haar_wavelet_transform_graph_from_signal(
+    static std::expected<std::vector<Graph>, mcis::GraphError>
+    create_haar_wavelet_transform_graph_from_signal(
         const std::vector<double>& signal, HaarWaveletGraph type
                                            = HaarWaveletGraph::BOTH);
 
