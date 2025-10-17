@@ -275,13 +275,13 @@ TEST_F(NodeTest, StreamOutputOperator) {
 
 // Test 15: Verifies tag getter and setter
 TEST_F(NodeTest, GetAndSetTag) {
-    EXPECT_EQ(node_a->get_tag(), 0);
+    EXPECT_EQ(node_a->get_tag(), "");
 
-    node_a->set_tag(10);
-    EXPECT_EQ(node_a->get_tag(), 10);
+    node_a->set_tag("group1");
+    EXPECT_EQ(node_a->get_tag(), "group1");
 
-    node_a->set_tag(-5);
-    EXPECT_EQ(node_a->get_tag(), -5);
+    node_a->set_tag("another_group");
+    EXPECT_EQ(node_a->get_tag(), "another_group");
 }
 
 // Test 15: Stress tests node operations with complex multi-node graph

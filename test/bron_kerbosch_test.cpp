@@ -109,8 +109,9 @@ TEST_F(BronKerboschTest, IdenticalTriangleGraphs) {
         g2.generate_diagram_file("identical_triangle_g2");
     }
 
+    std::vector<const Graph*> graphs = {&g1, &g2};
     auto result
-        = mcis_algorithm->run(g1, g2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -138,8 +139,9 @@ TEST_F(BronKerboschTest, TriangleVsPath) {
         path.generate_diagram_file("triangle_vs_path_path");
     }
 
-    auto result = mcis_algorithm->run(triangle, path,
-                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    std::vector<const Graph*> graphs = {&triangle, &path};
+    auto result
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -156,8 +158,9 @@ TEST_F(BronKerboschTest, TriangleVsPath) {
 TEST_F(BronKerboschTest, EmptyGraphs) {
     Graph empty1, empty2;
 
-    auto result = mcis_algorithm->run(empty1, empty2,
-                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    std::vector<const Graph*> graphs = {&empty1, &empty2};
+    auto result
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     EXPECT_FALSE(result.has_value());
     EXPECT_EQ(result.error(), mcis::AlgorithmError::EMPTY_GRAPH);
 }
@@ -173,8 +176,9 @@ TEST_F(BronKerboschTest, SingleNodeGraphs) {
         g2.generate_diagram_file("single_node_g2");
     }
 
+    std::vector<const Graph*> graphs = {&g1, &g2};
     auto result
-        = mcis_algorithm->run(g1, g2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -211,8 +215,9 @@ TEST_F(BronKerboschTest, MVMGraphComparison) {
     std::cout << "MVM(2,2) has " << mvm_2x2.get_num_nodes() << " nodes\n";
     std::cout << "MVM(3,2) has " << mvm_3x2.get_num_nodes() << " nodes\n";
 
-    auto result = mcis_algorithm->run(mvm_2x2, mvm_3x2,
-                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    std::vector<const Graph*> graphs = {&mvm_2x2, &mvm_3x2};
+    auto result
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -235,8 +240,9 @@ TEST_F(BronKerboschTest, SquareVsTriangle) {
         triangle.generate_diagram_file("square_vs_triangle_triangle");
     }
 
-    auto result = mcis_algorithm->run(square, triangle,
-                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    std::vector<const Graph*> graphs = {&square, &triangle};
+    auto result
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -260,8 +266,9 @@ TEST_F(BronKerboschTest, StarGraphComparison) {
         star5.generate_diagram_file("star_comparison_star5");
     }
 
-    auto result = mcis_algorithm->run(star3, star5,
-                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    std::vector<const Graph*> graphs = {&star3, &star5};
+    auto result
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -315,8 +322,9 @@ TEST_F(BronKerboschTest, DisconnectedComponents) {
         g2.generate_diagram_file("disconnected_g2");
     }
 
+    std::vector<const Graph*> graphs = {&g1, &g2};
     auto result
-        = mcis_algorithm->run(g1, g2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -351,8 +359,9 @@ TEST_F(BronKerboschTest, LargerMVMPerformance) {
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    auto result = mcis_algorithm->run(mvm_4x3, mvm_3x4,
-                                      AlgorithmType::BRON_KERBOSCH_SERIAL);
+    std::vector<const Graph*> graphs = {&mvm_4x3, &mvm_3x4};
+    auto result
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -376,7 +385,6 @@ TEST_F(BronKerboschTest, LargerMVMPerformance) {
 TEST_F(BronKerboschTest, CustomNamedGraphs) {
     Graph g1, g2;
 
-    // Create two similar but not identical graph patterns
     // Graph 1: A diamond pattern
     g1.add_node("TOP");
     g1.add_node("LEFT");
@@ -405,8 +413,9 @@ TEST_F(BronKerboschTest, CustomNamedGraphs) {
         g2.generate_diagram_file("custom_diamond_extended");
     }
 
+    std::vector<const Graph*> graphs = {&g1, &g2};
     auto result
-        = mcis_algorithm->run(g1, g2, AlgorithmType::BRON_KERBOSCH_SERIAL);
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
     ASSERT_TRUE(result.has_value());
     std::vector<Graph*> results = *result;
 
@@ -418,3 +427,75 @@ TEST_F(BronKerboschTest, CustomNamedGraphs) {
         delete graph;
     }
 }
+
+// Test 11: Three graphs with a common triangle
+TEST_F(BronKerboschTest, ThreeGraphsCommonTriangle) {
+    Graph g1 = create_simple_triangle();
+    Graph g2 = create_square();
+    Graph g3 = create_star_graph(3);
+
+    g2.add_edge("P", "R", 1);
+
+    if (generate_diagrams) {
+        g1.generate_diagram_file("three_graphs_g1");
+        g2.generate_diagram_file("three_graphs_g2");
+        g3.generate_diagram_file("three_graphs_g3");
+    }
+
+    std::vector<const Graph*> graphs = {&g1, &g2, &g3};
+    auto result
+        = mcis_algorithm->run(graphs, AlgorithmType::BRON_KERBOSCH_SERIAL);
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
+
+    print_mcis_results(results, "ThreeGraphsCommonTriangle");
+
+    EXPECT_FALSE(results.empty()) << "Should find a common structure";
+
+    for (auto* graph : results) {
+        delete graph;
+    }
+}
+
+// Test 12: Tag-based search
+TEST_F(BronKerboschTest, TagBasedSearch) {
+    Graph g1, g2;
+    g1.add_node("A");
+    g1.set_node_tag("A", "group1");
+    g1.add_node("B");
+    g1.set_node_tag("B", "group1");
+    g1.add_node("C");
+    g1.set_node_tag("C", "group2");
+    g1.add_edge("A", "B", 1);
+
+    g2.add_node("X");
+    g2.set_node_tag("X", "group1");
+    g2.add_node("Y");
+    g2.set_node_tag("Y", "group1");
+    g2.add_node("Z");
+    g2.set_node_tag("Z", "group2");
+    g2.add_edge("X", "Y", 1);
+
+    if (generate_diagrams) {
+        g1.generate_diagram_file("tag_search_g1");
+        g2.generate_diagram_file("tag_search_g2");
+    }
+
+    std::vector<const Graph*> graphs = {&g1, &g2};
+    auto result = mcis_algorithm->run(
+        graphs, AlgorithmType::BRON_KERBOSCH_SERIAL, "group1");
+    ASSERT_TRUE(result.has_value());
+    std::vector<Graph*> results = *result;
+
+    print_mcis_results(results, "TagBasedSearch");
+
+    EXPECT_FALSE(results.empty()) << "Should find a common structure in group1";
+    if (!results.empty()) {
+        EXPECT_EQ(results[0]->get_num_nodes(), 2);
+    }
+
+    for (auto* graph : results) {
+        delete graph;
+    }
+}
+

@@ -186,7 +186,15 @@ class Graph {
      * @return An optional error if the node does not exist.
      */
     std::optional<mcis::GraphError> set_node_tag(const std::string& id,
-                                                 int new_tag);
+                                                 const std::string& new_tag);
+
+    /**
+     * @brief Creates a subgraph containing only nodes with a specific tag.
+     * @param tag The tag to filter nodes by.
+     * @return A new Graph object representing the subgraph.
+     */
+    [[nodiscard]]
+    Graph get_subgraph_with_tag(const std::string& tag) const;
 
     /**
      * @brief Retrieves the node identified by the given ID

@@ -463,14 +463,35 @@ TEST_F(GraphTest, SetNodeTag) {
     graph->add_node("A");
     graph->add_node("B");
 
-    EXPECT_FALSE(graph->set_node_tag("A", 5));
-    EXPECT_EQ(graph->get_node("A")->get_tag(), 5);
-    EXPECT_EQ(graph->get_node("B")->get_tag(), 0);
+    EXPECT_FALSE(graph->set_node_tag("A", "group1"));
+    EXPECT_EQ(graph->get_node("A")->get_tag(), "group1");
+    EXPECT_EQ(graph->get_node("B")->get_tag(), "");
 
-    EXPECT_FALSE(graph->set_node_tag("B", -10));
-    EXPECT_EQ(graph->get_node("B")->get_tag(), -10);
+    EXPECT_FALSE(graph->set_node_tag("B", "group2"));
+    EXPECT_EQ(graph->get_node("B")->get_tag(), "group2");
 
-    auto error = graph->set_node_tag("C", 15);
+    auto error = graph->set_node_tag("C", "group1");
     EXPECT_TRUE(error.has_value());
     EXPECT_EQ(error.value(), mcis::GraphError::NODE_DOES_NOT_EXIST);
 }
+
+// Test 22: Verifies creating a subgraph with a specific tag
+TEST_F(GraphTest, GetSubgraphWithTag) {
+    graph->add_node("A");
+    graph->set_node_tag("A", "group1");
+    graph->add_node("B");
+    graph->set_node_tag("B", "group1");
+    graph->add_node("C");
+    graph->set_node_tag("C", "group2");
+    graph->add_edge("A", "B", 1);
+    graph->add_edge("A", "C", 1);
+
+    Graph subgraph = graph->get_subgraph_with_tag("group1");
+
+    EXPECT_EQ(subgraph.get_num_nodes(), 2);
+    EXPECT_NE(subgraph.get_node("A"), nullptr);
+    EXPECT_NE(subgraph.get_node("B"), nullptr);
+    EXPECT_EQ(subgraph.get_node("C"), nullptr);
+    EXPECT_TRUE(subgraph.get_node("A")->contains_edge(subgraph.get_node("B")));
+}
+

@@ -13,6 +13,7 @@
 #define INCLUDE_MCIS_MCIS_ALGORITHM_H_
 
 #include <expected>
+#include <string>
 #include <vector>
 
 #include "mcis/errors.h"
@@ -51,43 +52,46 @@ class MCISAlgorithm {
     ~MCISAlgorithm();
 
     /**
-     * @brief Runs the specified MCIS algorithm on two input graphs.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @brief Runs the specified MCIS algorithm on a set of input graphs.
+     * @param graphs A vector of pointers to the input graphs.
      * @param type The type of algorithm to run (from AlgorithmType enum).
+     * @param tag An optional tag to filter nodes by.
      * @return A vector of pointers to Graph objects representing the found MCIS
      * results, or an error.
      */
     std::expected<std::vector<Graph*>, mcis::AlgorithmError> run(
-        const Graph& g1, const Graph& g2, AlgorithmType type);
+        const std::vector<const Graph*>& graphs, AlgorithmType type,
+        std::optional<std::string> tag = std::nullopt);
 
     /**
-     * @brief Runs a user-specified MCIS algorithm on two input graphs.
+     * @brief Runs a user-specified MCIS algorithm on a set of input graphs.
      * @tparam T Type of the MCIS algorithm, must derive from MCISFinder.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @param graphs A vector of pointers to the input graphs.
      * @param algorithm Pointer to the user-specified algorithm instance.
+     * @param tag An optional tag to filter nodes by.
      * @return A vector of pointers to Graph objects representing the found MCIS
      * results, or an error.
      */
     template <typename T>
         requires std::is_base_of_v<MCISFinder, T>
     std::expected<std::vector<Graph*>, mcis::AlgorithmError> run(
-        const Graph& g1, const Graph& g2, T* algorithm);
+        const std::vector<const Graph*>& graphs, T* algorithm,
+        std::optional<std::string> tag = std::nullopt);
 
     /**
-     * @brief Runs multiple specified MCIS algorithms on two input graphs.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @brief Runs multiple specified MCIS algorithms on a set of input graphs.
+     * @param graphs A vector of pointers to the input graphs.
      * @param types A vector of algorithm types to run (from AlgorithmType
      * enum).
+     * @param tag An optional tag to filter nodes by.
      * @return A vector of vectors, where each inner vector contains pointers to
      * Graph objects representing the found MCIS results for each algorithm, or
      * an error.
      */
     std::expected<std::vector<std::vector<Graph*>>, mcis::AlgorithmError>
-    run_many(const Graph& g1, const Graph& g2,
-             std::vector<AlgorithmType> types);
+    run_many(const std::vector<const Graph*>& graphs,
+             std::vector<AlgorithmType> types,
+             std::optional<std::string> tag = std::nullopt);
 };
 
 #endif  // INCLUDE_MCIS_MCIS_ALGORITHM_H_
