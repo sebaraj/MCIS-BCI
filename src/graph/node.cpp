@@ -186,6 +186,10 @@ const std::unordered_map<Node*, int>& Node::get_children() const {
     return children;
 }
 
+const std::unordered_map<Node*, int>& Node::get_parents() const {
+    return parents;
+}
+
 std::ostream& operator<<(std::ostream& os, const Node& node) {
     os << node.id << " -> { ";
     std::vector<Node*> keys(node.children.size());
