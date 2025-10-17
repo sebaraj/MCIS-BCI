@@ -11,7 +11,7 @@
 
 #include "mcis/mcis_algorithm.h"
 
-#include <iostream>
+#include <string>
 #include <vector>
 
 #include "./bron_kerbosch_serial.h"
@@ -27,42 +27,54 @@ MCISAlgorithm::~MCISAlgorithm() {
 }
 
 std::expected<std::vector<Graph*>, mcis::AlgorithmError> MCISAlgorithm::run(
-    const Graph& g1, const Graph& g2, AlgorithmType type) {
-    switch (type) {
-        case AlgorithmType::BRON_KERBOSCH_SERIAL:
-            return algorithms[static_cast<int>(type)]->find(g1, g2);
-            break;
-        default:
-            return std::unexpected(mcis::AlgorithmError::INVALID_ALGORITHM);
+    const std::vector<const Graph*>& graphs, AlgorithmType type,
+    std::optional<std::string> tag) {
+    if (tag) {
+        std::vector<Graph> subgraphs;
+        subgraphs.reserve(graphs.size());
+        std::vector<const Graph*> subgraph_ptrs;
+        subgraph_ptrs.reserve(graphs.size());
+        for (const auto& graph : graphs) {
+            subgraphs.push_back(graph->get_subgraph_with_tag(*tag));
+            subgraph_ptrs.push_back(&subgraphs.back());
+        }
+        return algorithms[static_cast<int>(type)]->find(subgraph_ptrs, tag);
+    } else {
+        return algorithms[static_cast<int>(type)]->find(graphs, tag);
     }
-
-    return std::unexpected(mcis::AlgorithmError::INVALID_ALGORITHM);
 }
 
 template <typename T>
     requires std::is_base_of_v<MCISFinder, T>
 std::expected<std::vector<Graph*>, mcis::AlgorithmError> MCISAlgorithm::run(
-    const Graph& g1, const Graph& g2, T* algorithm) {
-    return algorithm->find(g1, g2);
+    const std::vector<const Graph*>& graphs, T* algorithm,
+    std::optional<std::string> tag) {
+    if (tag) {
+        std::vector<Graph> subgraphs;
+        subgraphs.reserve(graphs.size());
+        std::vector<const Graph*> subgraph_ptrs;
+        subgraph_ptrs.reserve(graphs.size());
+        for (const auto& graph : graphs) {
+            subgraphs.push_back(graph->get_subgraph_with_tag(*tag));
+            subgraph_ptrs.push_back(&subgraphs.back());
+        }
+        return algorithm->find(subgraph_ptrs, tag);
+    } else {
+        return algorithm->find(graphs, tag);
+    }
 }
 
 std::expected<std::vector<std::vector<Graph*>>, mcis::AlgorithmError>
-MCISAlgorithm::run_many(const Graph& g1, const Graph& g2,
-                        std::vector<AlgorithmType> types) {
+MCISAlgorithm::run_many(const std::vector<const Graph*>& graphs,
+                        std::vector<AlgorithmType> types,
+                        std::optional<std::string> tag) {
     std::vector<std::vector<Graph*>> results;
     for (const auto& type : types) {
-        switch (type) {
-            case AlgorithmType::BRON_KERBOSCH_SERIAL: {
-                auto result = algorithms[static_cast<int>(type)]->find(g1, g2);
-                if (result) {
-                    results.push_back(*result);
-                } else {
-                    return std::unexpected(result.error());
-                }
-                break;
-            }
-            default:
-                return std::unexpected(mcis::AlgorithmError::INVALID_ALGORITHM);
+        auto result = run(graphs, type, tag);
+        if (result) {
+            results.push_back(*result);
+        } else {
+            return std::unexpected(result.error());
         }
     }
     return results;

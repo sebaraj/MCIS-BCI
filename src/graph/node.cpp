@@ -19,7 +19,7 @@
 #include <vector>
 
 Node::Node(const std::string& id)
-    : id(std::move(id)), num_parents(0), num_children(0), tag(0) {}
+    : id(std::move(id)), num_parents(0), num_children(0), tag("") {}
 
 Node::Node(const Node& other)
     : id(other.id),
@@ -47,10 +47,9 @@ Node::Node(Node&& other) noexcept
       num_children(other.num_children),
       children(std::move(other.children)),
       parents(std::move(other.parents)),
-      tag(other.tag) {
+      tag(std::move(other.tag)) {
     other.num_parents = 0;
     other.num_children = 0;
-    other.tag = 0;
 }
 
 Node& Node::operator=(Node&& other) noexcept {
@@ -60,10 +59,9 @@ Node& Node::operator=(Node&& other) noexcept {
         num_children = other.num_children;
         children = std::move(other.children);
         parents = std::move(other.parents);
-        tag = other.tag;
+        tag = std::move(other.tag);
         other.num_parents = 0;
         other.num_children = 0;
-        other.tag = 0;
     }
     return *this;
 }
@@ -75,9 +73,9 @@ Node::~Node() {
 
 std::string Node::get_id() const { return id; }
 
-int Node::get_tag() const { return tag; }
+std::string Node::get_tag() const { return tag; }
 
-void Node::set_tag(int new_tag) { tag = new_tag; }
+void Node::set_tag(const std::string& new_tag) { tag = new_tag; }
 
 int Node::get_num_parents() const { return num_parents; }
 

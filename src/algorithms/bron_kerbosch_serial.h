@@ -31,23 +31,19 @@
 class BronKerboschSerial : public MCISFinder {
  public:
     /**
-     * @brief Represents a node in the product graph formed by two input graphs.
-     * Each product node corresponds to a pair of nodes, one from each input
+     * @brief Represents a node in the product graph formed by N input graphs.
+     * Each product node corresponds to a tuple of nodes, one from each input
      * graph.
      */
     struct ProductNode {
-        std::string g1_node;
-        std::string g2_node;
+        std::vector<std::string> node_ids;
 
         bool operator<(const ProductNode& other) const {
-            if (g1_node != other.g1_node) {
-                return g1_node < other.g1_node;
-            }
-            return g2_node < other.g2_node;
+            return node_ids < other.node_ids;
         }
 
         bool operator==(const ProductNode& other) const {
-            return g1_node == other.g1_node && g2_node == other.g2_node;
+            return node_ids == other.node_ids;
         }
 
         bool operator!=(const ProductNode& other) const {
@@ -61,9 +57,12 @@ class BronKerboschSerial : public MCISFinder {
      */
     struct ProductNodeHash {
         std::size_t operator()(const ProductNode& pn) const {
-            std::size_t h1 = std::hash<std::string>{}(pn.g1_node);
-            std::size_t h2 = std::hash<std::string>{}(pn.g2_node);
-            return h1 ^ (h2 << 1);
+            std::size_t seed = 0;
+            for (const auto& id : pn.node_ids) {
+                seed ^= std::hash<std::string>{}(id) + 0x9e3779b9 + (seed << 6)
+                        + (seed >> 2);
+            }
+            return seed;
         }
     };
 
@@ -71,43 +70,42 @@ class BronKerboschSerial : public MCISFinder {
      * @brief Represents the product graph structure used for MCIS computation.
      */
     struct ProductGraph {
-        std::set<ProductNode> nodes;  ///< All product nodes
+        std::set<ProductNode> nodes;
         std::unordered_map<ProductNode, std::set<ProductNode>, ProductNodeHash>
-            adjacency;  ///< Adjacency list representation
+            adjacency;
     };
 
     /**
-     * @brief Finds the Maximum Common Induced Subgraph (MCIS) between two
+     * @brief Finds the Maximum Common Induced Subgraph (MCIS) between a set of
      * graphs using the Bron-Kerbosch algorithm.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @param graphs A vector of pointers to the input graphs.
+     * @param tag An optional tag to filter nodes by.
      * @return A vector of pointers to Graph objects representing the found MCIS
      * results, or an error if the graphs are empty.
      */
     std::expected<std::vector<Graph*>, mcis::AlgorithmError> find(
-        const Graph& g1, const Graph& g2) override;
+        const std::vector<const Graph*>& graphs,
+        std::optional<std::string> tag) override;
 
  private:
     /**
-     * @brief Constructs the product graph from two input graphs.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @brief Constructs the product graph from a set of input graphs.
+     * @param graphs A vector of pointers to the input graphs.
      * @return The product graph structure.
      */
-    ProductGraph build_product_graph(const Graph& g1, const Graph& g2);
+    ProductGraph build_product_graph(const std::vector<const Graph*>& graphs);
 
     /**
      * @brief Determines if two product nodes should be adjacent in the product
      * graph.
      * @param p1 First product node.
      * @param p2 Second product node.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @param graphs A vector of pointers to the input graphs.
      * @return True if the product nodes should be adjacent.
      */
     bool are_product_nodes_adjacent(const ProductNode& p1,
-                                    const ProductNode& p2, const Graph& g1,
-                                    const Graph& g2);
+                                    const ProductNode& p2,
+                                    const std::vector<const Graph*>& graphs);
 
     /**
      * @brief Finds all maximal cliques in the product graph using Bron-Kerbosch
@@ -151,39 +149,36 @@ class BronKerboschSerial : public MCISFinder {
     /**
      * @brief Converts maximal cliques to actual induced subgraphs.
      * @param cliques The cliques found in the product graph.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @param graphs A vector of pointers to the input graphs.
      * @return Vector of MCIS graphs.
      */
     std::vector<Graph*> convert_cliques_to_subgraphs(
-        const std::vector<std::set<ProductNode>>& cliques, const Graph& g1,
-        const Graph& g2);
+        const std::vector<std::set<ProductNode>>& cliques,
+        const std::vector<const Graph*>& graphs);
 
     /**
      * @brief Creates a subgraph from a single clique.
      * @param clique The clique to convert.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @param graphs A vector of pointers to the input graphs.
      * @return Pointer to the created subgraph.
      */
     Graph* create_subgraph_from_clique(const std::set<ProductNode>& clique,
-                                       const Graph& g1, const Graph& g2);
+                                       const std::vector<const Graph*>& graphs);
 
     /**
-     * @brief Checks if two nodes are structurally compatible.
-     * @param n1 First node.
-     * @param n2 Second node.
+     * @brief Checks if a set of nodes are structurally compatible.
+     * @param nodes A vector of nodes to check.
      * @return True if nodes are compatible.
      */
-    bool are_nodes_structurally_compatible(Node* n1, Node* n2);
+    bool are_nodes_structurally_compatible(const std::vector<Node*>& nodes);
 
     /**
      * @brief Simple heuristic MCIS finder for large graphs.
-     * @param g1 The first input graph.
-     * @param g2 The second input graph.
+     * @param graphs A vector of pointers to the input graphs.
      * @return Vector of simple MCIS results.
      */
-    std::vector<Graph*> find_simple_mcis(const Graph& g1, const Graph& g2);
+    std::vector<Graph*> find_simple_mcis(
+        const std::vector<const Graph*>& graphs);
 };
 
 #endif  // SRC_ALGORITHMS_BRON_KERBOSCH_SERIAL_H_

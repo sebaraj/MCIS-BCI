@@ -13,6 +13,7 @@
 #define INCLUDE_MCIS_MCIS_FINDER_H_
 
 #include <expected>
+#include <string>
 #include <vector>
 
 #include "mcis/errors.h"
@@ -27,14 +28,14 @@
 class MCISFinder {
  public:
     /**
-     * Pure virtual function to find the MCIS between two graphs.
-     * @param g1 The first graph.
-     * @param g2 The second graph.
+     * Pure virtual function to find the MCIS between a set of graphs.
+     * @param graphs A vector of pointers to the graphs.
+     * @param tag An optional tag to filter nodes by.
      * @return A vector of pointers to Graph objects representing the MCIS
      * found, or an error if the graphs are empty.
      */
     virtual std::expected<std::vector<Graph*>, mcis::AlgorithmError> find(
-        const Graph& g1, const Graph& g2)
+        const std::vector<const Graph*>& graphs, std::optional<std::string> tag)
         = 0;
 
     /**

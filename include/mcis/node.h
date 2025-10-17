@@ -54,9 +54,9 @@ class Node {
     std::unordered_map<Node*, int> parents;
 
     /**
-     * @brief Integer tag for grouping nodes.
+     * @brief String tag for grouping nodes.
      */
-    int tag;
+    std::string tag;
 
  public:
     /**
@@ -106,16 +106,16 @@ class Node {
 
     /**
      * @brief Retrieves the node's tag.
-     * @return The node's tag as an integer.
+     * @return The node's tag as a string.
      */
     [[nodiscard]]
-    int get_tag() const;
+    std::string get_tag() const;
 
     /**
      * @brief Sets the node's tag.
      * @param new_tag The new tag for the node.
      */
-    void set_tag(int new_tag);
+    void set_tag(const std::string& new_tag);
 
     /**
      * @brief Retrieves the number of parent nodes (incoming edges).

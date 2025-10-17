@@ -310,14 +310,46 @@ std::optional<mcis::GraphError> Graph::change_edge_weight(
     return std::nullopt;
 }
 
-std::optional<mcis::GraphError> Graph::set_node_tag(const std::string& id,
-                                                    int new_tag) {
+std::optional<mcis::GraphError> Graph::set_node_tag(
+    const std::string& id, const std::string& new_tag) {
     auto it = nodes.find(id);
     if (it == nodes.end()) {
         return mcis::GraphError::NODE_DOES_NOT_EXIST;
     }
     it->second->set_tag(new_tag);
     return std::nullopt;
+}
+
+Graph Graph::get_subgraph_with_tag(const std::string& tag) const {
+    Graph subgraph;
+    std::unordered_map<Node*, Node*> old_to_new_node_map;
+
+    // First, create all the nodes in the subgraph
+    for (const auto& pair : nodes) {
+        if (pair.second->get_tag() == tag) {
+            subgraph.add_node(pair.second->get_id());
+            old_to_new_node_map[pair.second]
+                = subgraph.get_node(pair.second->get_id());
+        }
+    }
+
+    // Now, add the edges, but only between nodes that are in the subgraph
+    for (const auto& pair : nodes) {
+        if (pair.second->get_tag() == tag) {
+            Node* old_node = pair.second;
+            Node* new_node = old_to_new_node_map[old_node];
+            for (const auto& child_pair : old_node->get_children()) {
+                Node* old_child = child_pair.first;
+                if (old_child->get_tag() == tag) {
+                    Node* new_child = old_to_new_node_map[old_child];
+                    subgraph.add_edge(new_node->get_id(), new_child->get_id(),
+                                      child_pair.second);
+                }
+            }
+        }
+    }
+
+    return subgraph;
 }
 
 Node* Graph::get_node(const std::string& id) const {
