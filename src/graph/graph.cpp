@@ -31,20 +31,61 @@ Graph::Graph(const std::vector<Node>& node_list) {
 }
 
 Graph::Graph(const Graph& other) {
+    std::unordered_map<Node*, Node*> node_map;
+    node_map.reserve(other.nodes.size());
     for (const auto& pair : other.nodes) {
-        nodes[pair.first] = new Node(*pair.second);
+        Node* old_node = pair.second;
+        Node* new_node = new Node(old_node->get_id());
+        new_node->set_tag(old_node->get_tag());
+        nodes[pair.first] = new_node;
+        node_map[old_node] = new_node;
     }
+
+    for (const auto& pair : other.nodes) {
+        Node* old_node = pair.second;
+        Node* new_node = node_map[old_node];
+        for (const auto& child_pair : old_node->get_children()) {
+            Node* old_child = child_pair.first;
+            int weight = child_pair.second;
+            Node* new_child = node_map[old_child];
+            new_node->add_edge(new_child, weight);
+        }
+    }
+
+    is_weighted = other.is_weighted;
 }
 
 Graph& Graph::operator=(const Graph& other) {
     if (this != &other) {
+        // Clear existing nodes
         for (auto& pair : nodes) {
             delete pair.second;
         }
         nodes.clear();
+
+        std::unordered_map<Node*, Node*> node_map;
+        node_map.reserve(other.nodes.size());
         for (const auto& pair : other.nodes) {
-            nodes[pair.first] = new Node(*pair.second);
+            Node* old_node = pair.second;
+            Node* new_node = new Node(old_node->get_id());
+            new_node->set_tag(old_node->get_tag());
+            nodes[pair.first] = new_node;
+            node_map[old_node] = new_node;
         }
+
+        for (const auto& pair : other.nodes) {
+            Node* old_node = pair.second;
+            Node* new_node = node_map[old_node];
+            for (const auto& child_pair : old_node->get_children()) {
+                Node* old_child = child_pair.first;
+                int weight = child_pair.second;
+                Node* new_child = node_map[old_child];
+                new_node->add_edge(new_child, weight);
+            }
+        }
+
+        is_weighted = other.is_weighted;
+        invalidate_caches();
     }
     return *this;
 }
