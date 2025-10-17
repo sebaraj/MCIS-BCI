@@ -59,7 +59,8 @@ class BronKerboschSerial : public MCISFinder {
         std::size_t operator()(const ProductNode& pn) const {
             std::size_t seed = 0;
             for (const auto& id : pn.node_ids) {
-                seed ^= std::hash<std::string>{}(id) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+                seed ^= std::hash<std::string>{}(id) + 0x9e3779b9 + (seed << 6)
+                        + (seed >> 2);
             }
             return seed;
         }
@@ -176,7 +177,8 @@ class BronKerboschSerial : public MCISFinder {
      * @param graphs A vector of pointers to the input graphs.
      * @return Vector of simple MCIS results.
      */
-    std::vector<Graph*> find_simple_mcis(const std::vector<const Graph*>& graphs);
+    std::vector<Graph*> find_simple_mcis(
+        const std::vector<const Graph*>& graphs);
 };
 
 #endif  // SRC_ALGORITHMS_BRON_KERBOSCH_SERIAL_H_

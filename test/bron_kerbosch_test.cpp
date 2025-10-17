@@ -498,4 +498,3 @@ TEST_F(BronKerboschTest, TagBasedSearch) {
         delete graph;
     }
 }
-

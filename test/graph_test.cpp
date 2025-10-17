@@ -494,4 +494,3 @@ TEST_F(GraphTest, GetSubgraphWithTag) {
     EXPECT_EQ(subgraph.get_node("C"), nullptr);
     EXPECT_TRUE(subgraph.get_node("A")->contains_edge(subgraph.get_node("B")));
 }
-

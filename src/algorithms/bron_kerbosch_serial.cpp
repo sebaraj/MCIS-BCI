@@ -9,7 +9,7 @@
  * This software is licensed under the MIT License.
  */
 
-#include "bron_kerbosch_serial.h"
+#include "./bron_kerbosch_serial.h"
 
 #include <algorithm>
 #include <chrono>
@@ -405,4 +405,3 @@ std::vector<Graph*> BronKerboschSerial::find_simple_mcis(
 
     return results;
 }
-
