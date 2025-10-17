@@ -44,13 +44,13 @@ std::expected<Graph, mcis::GraphError> Graph::create_fft_graph_from_dimensions(
     }
 
     for (int stage = 1; stage <= stages; ++stage) {
-        int butterfly_size = 1 << stage;
+        int butterflies_in_stage = 1 << (stage - 1);
+        int butterfly_size = n / butterflies_in_stage;
         int half_size = butterfly_size / 2;
-        int num_butterflies_per_group = n / butterfly_size;
 
-        for (int i = 0; i < num_butterflies_per_group; ++i) {
+        for (int b = 0; b < butterflies_in_stage; ++b) {
             for (int j = 0; j < half_size; ++j) {
-                int top_idx = i * butterfly_size + j;
+                int top_idx = b * butterfly_size + j;
                 int bottom_idx = top_idx + half_size;
 
                 std::string top_node_in

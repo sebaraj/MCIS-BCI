@@ -26,6 +26,7 @@ Node::Node(const Node& other)
       num_parents(other.num_parents),
       num_children(other.num_children),
       children(other.children),
+      parents(other.parents),
       tag(other.tag) {}
 
 Node& Node::operator=(const Node& other) {
@@ -34,6 +35,7 @@ Node& Node::operator=(const Node& other) {
         num_parents = other.num_parents;
         num_children = other.num_children;
         children = other.children;
+        parents = other.parents;
         tag = other.tag;
     }
     return *this;
