@@ -224,6 +224,13 @@ class Node {
     const std::unordered_map<Node*, int>& get_children() const;
 
     /**
+     * @brief Provides access to the parents map for external use.
+     * @return Reference to the parents map.
+     */
+    [[nodiscard]]
+    const std::unordered_map<Node*, int>& get_parents() const;
+
+    /**
      * @brief operator to print node and its children
      * @param os output stream
      * @param node node to print

@@ -298,7 +298,7 @@ class Graph {
      * @return Graph representing the Haar wavelet transform CDAG
      */
     [[nodiscard]]
-    std::expected<std::vector<Graph>, mcis::GraphError>
+    static std::expected<std::vector<Graph>, mcis::GraphError>
     create_haar_wavelet_transform_graph_from_dimensions(
         int n, int d, int k = 1,
         HaarWaveletGraph type = HaarWaveletGraph::BOTH);
