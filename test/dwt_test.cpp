@@ -31,9 +31,8 @@ class DWTTest : public ::testing::Test {
 
 // Test 1: Create DWT graph and generate diagram
 TEST_F(DWTTest, DWTGraphCreation) {
-    Graph graph;
     auto dwt_graph_expected
-        = graph.create_haar_wavelet_transform_graph_from_dimensions(8, 3);
+        = Graph::create_haar_wavelet_transform_graph_from_dimensions(8, 3);
     ASSERT_TRUE(dwt_graph_expected.has_value());
     std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
 
@@ -49,18 +48,16 @@ TEST_F(DWTTest, DWTGraphCreation) {
 
 // Test 2: Test invalid parameters
 TEST_F(DWTTest, DWTGraphInvalidParameters) {
-    Graph graph;
     auto dwt_graph_expected
-        = graph.create_haar_wavelet_transform_graph_from_dimensions(7, 3);
+        = Graph::create_haar_wavelet_transform_graph_from_dimensions(7, 3);
     ASSERT_FALSE(dwt_graph_expected.has_value());
     ASSERT_EQ(dwt_graph_expected.error(), mcis::GraphError::INVALID_PARAMETERS);
 }
 
 // Test 3: Create DWT graph with n=16, d=4
 TEST_F(DWTTest, DWTGraphCreation_n16_d4) {
-    Graph graph;
     auto dwt_graph_expected
-        = graph.create_haar_wavelet_transform_graph_from_dimensions(16, 4);
+        = Graph::create_haar_wavelet_transform_graph_from_dimensions(16, 4);
     ASSERT_TRUE(dwt_graph_expected.has_value());
     auto dwt_graphs = dwt_graph_expected.value();
     EXPECT_EQ(dwt_graphs.size(), static_cast<size_t>(2));
@@ -92,9 +89,8 @@ TEST_F(DWTTest, DWTGraphFromSignal) {
 
 // Test 5: Test PRUNED_AVERAGE graph type
 TEST_F(DWTTest, DWTGraphPrunedAverage) {
-    Graph graph;
     auto dwt_graph_expected
-        = graph.create_haar_wavelet_transform_graph_from_dimensions(
+        = Graph::create_haar_wavelet_transform_graph_from_dimensions(
             8, 3, 1, HaarWaveletGraph::PRUNED_AVERAGE);
     ASSERT_TRUE(dwt_graph_expected.has_value());
     std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
@@ -111,9 +107,8 @@ TEST_F(DWTTest, DWTGraphPrunedAverage) {
 
 // Test 6: Test PRUNED_COEFFICIENT graph type
 TEST_F(DWTTest, DWTGraphPrunedCoefficient) {
-    Graph graph;
     auto dwt_graph_expected
-        = graph.create_haar_wavelet_transform_graph_from_dimensions(
+        = Graph::create_haar_wavelet_transform_graph_from_dimensions(
             8, 3, 1, HaarWaveletGraph::PRUNED_COEFFICIENT);
     ASSERT_TRUE(dwt_graph_expected.has_value());
     std::vector<Graph> dwt_graphs = dwt_graph_expected.value();
