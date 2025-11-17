@@ -15,9 +15,11 @@
 #include <vector>
 
 #include "./bron_kerbosch_serial.h"
+#include "mcis/algorithms/kpt.h"
 
 MCISAlgorithm::MCISAlgorithm() {
     algorithms.push_back(new BronKerboschSerial());
+    algorithms.push_back(new KPT());
 }
 
 MCISAlgorithm::~MCISAlgorithm() {

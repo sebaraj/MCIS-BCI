@@ -24,7 +24,7 @@
  * @enum AlgorithmType
  * @brief Enumeration of available MCIS algorithms.
  */
-enum class AlgorithmType { BRON_KERBOSCH_SERIAL };
+enum class AlgorithmType { BRON_KERBOSCH_SERIAL, KPT };
 
 /**
  * @class MCISAlgorithm
