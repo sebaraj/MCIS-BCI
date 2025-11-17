@@ -31,14 +31,15 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
     Graph pruned_avg_graph;
     Graph pruned_coeff_graph;
 
-    if (type == HaarWaveletGraph::PRUNED_AVERAGE || type == HaarWaveletGraph::BOTH) {
+    if (type == HaarWaveletGraph::PRUNED_AVERAGE
+        || type == HaarWaveletGraph::BOTH) {
         for (int i = 0; i < k * (1 << d); ++i) {
             pruned_avg_graph.add_node("s_" + std::to_string(i));
         }
         for (int i = d; i > 0; --i) {
             for (int j = 0; j < k * (1 << (i - 1)); ++j) {
-                std::string avg_node_name =
-                    "a^" + std::to_string(d - i) + "_" + std::to_string(j);
+                std::string avg_node_name
+                    = "a^" + std::to_string(d - i) + "_" + std::to_string(j);
                 pruned_avg_graph.add_node(avg_node_name);
                 if (i == d) {
                     pruned_avg_graph.add_edge("s_" + std::to_string(2 * j),
@@ -46,14 +47,13 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
                     pruned_avg_graph.add_edge("s_" + std::to_string(2 * j + 1),
                                               avg_node_name, 0);
                 } else {
-                    pruned_avg_graph.add_edge(
-                        "a^" + std::to_string(d - i - 1) + "_" +
-                            std::to_string(2 * j),
-                        avg_node_name, 0);
-                    pruned_avg_graph.add_edge(
-                        "a^" + std::to_string(d - i - 1) + "_" +
-                            std::to_string(2 * j + 1),
-                        avg_node_name, 0);
+                    pruned_avg_graph.add_edge("a^" + std::to_string(d - i - 1)
+                                                  + "_" + std::to_string(2 * j),
+                                              avg_node_name, 0);
+                    pruned_avg_graph.add_edge("a^" + std::to_string(d - i - 1)
+                                                  + "_"
+                                                  + std::to_string(2 * j + 1),
+                                              avg_node_name, 0);
                 }
             }
         }
@@ -66,23 +66,23 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
         }
         for (int i = d; i > 0; --i) {
             for (int j = 0; j < k * (1 << (i - 1)); ++j) {
-                std::string coeff_node_name =
-                    "d^" + std::to_string(d - i) + "_" + std::to_string(j);
+                std::string coeff_node_name
+                    = "d^" + std::to_string(d - i) + "_" + std::to_string(j);
                 pruned_coeff_graph.add_node(coeff_node_name);
                 if (i == d) {
                     pruned_coeff_graph.add_edge("s_" + std::to_string(2 * j),
                                                 coeff_node_name, 0);
-                    pruned_coeff_graph.add_edge("s_" + std::to_string(2 * j + 1),
-                                                coeff_node_name, 0);
+                    pruned_coeff_graph.add_edge(
+                        "s_" + std::to_string(2 * j + 1), coeff_node_name, 0);
                 } else {
-                    pruned_coeff_graph.add_edge(
-                        "a^" + std::to_string(d - i - 1) + "_" +
-                            std::to_string(2 * j),
-                        coeff_node_name, 0);
-                    pruned_coeff_graph.add_edge(
-                        "a^" + std::to_string(d - i - 1) + "_" +
-                            std::to_string(2 * j + 1),
-                        coeff_node_name, 0);
+                    pruned_coeff_graph.add_edge("a^" + std::to_string(d - i - 1)
+                                                    + "_"
+                                                    + std::to_string(2 * j),
+                                                coeff_node_name, 0);
+                    pruned_coeff_graph.add_edge("a^" + std::to_string(d - i - 1)
+                                                    + "_"
+                                                    + std::to_string(2 * j + 1),
+                                                coeff_node_name, 0);
                 }
             }
         }
@@ -142,12 +142,12 @@ Graph::create_haar_wavelet_transform_graph_from_signal(
         std::vector<double> next_level_averages(next_size);
 
         for (int j = 0; j < next_size; ++j) {
-            averages[i][j] = (current_level_signal[2 * j] +
-                              current_level_signal[2 * j + 1]) /
-                             SQRT2;
-            coefficients[i][j] = (current_level_signal[2 * j] -
-                                  current_level_signal[2 * j + 1]) /
-                                 SQRT2;
+            averages[i][j] = (current_level_signal[2 * j]
+                              + current_level_signal[2 * j + 1])
+                             / SQRT2;
+            coefficients[i][j] = (current_level_signal[2 * j]
+                                  - current_level_signal[2 * j + 1])
+                                 / SQRT2;
             next_level_averages[j] = averages[i][j];
         }
         current_level_signal = next_level_averages;
@@ -162,12 +162,11 @@ Graph::create_haar_wavelet_transform_graph_from_signal(
 
         for (int i = d; i > 0; --i) {
             for (int j = 0; j < (n / (1 << i)); ++j) {
-                std::string avg_node_name =
-                    "a^" + std::to_string(d - i) + "_" + std::to_string(j);
+                std::string avg_node_name
+                    = "a^" + std::to_string(d - i) + "_" + std::to_string(j);
                 graph.add_node(avg_node_name);
-                graph.set_node_tag(
-                    avg_node_name,
-                    std::to_string(averages[d - i][j]));
+                graph.set_node_tag(avg_node_name,
+                                   std::to_string(averages[d - i][j]));
 
                 if (i == d) {
                     graph.add_edge("s_" + std::to_string(2 * j), avg_node_name,
@@ -175,11 +174,11 @@ Graph::create_haar_wavelet_transform_graph_from_signal(
                     graph.add_edge("s_" + std::to_string(2 * j + 1),
                                    avg_node_name, 0);
                 } else {
-                    graph.add_edge("a^" + std::to_string(d - i - 1) + "_" +
-                                       std::to_string(2 * j),
+                    graph.add_edge("a^" + std::to_string(d - i - 1) + "_"
+                                       + std::to_string(2 * j),
                                    avg_node_name, 0);
-                    graph.add_edge("a^" + std::to_string(d - i - 1) + "_" +
-                                       std::to_string(2 * j + 1),
+                    graph.add_edge("a^" + std::to_string(d - i - 1) + "_"
+                                       + std::to_string(2 * j + 1),
                                    avg_node_name, 0);
                 }
             }
@@ -188,12 +187,11 @@ Graph::create_haar_wavelet_transform_graph_from_signal(
         if (is_coeff_graph) {
             for (int i = d; i > 0; --i) {
                 for (int j = 0; j < (n / (1 << i)); ++j) {
-                    std::string coeff_node_name =
-                        "d^" + std::to_string(d - i) + "_" + std::to_string(j);
+                    std::string coeff_node_name = "d^" + std::to_string(d - i)
+                                                  + "_" + std::to_string(j);
                     graph.add_node(coeff_node_name);
-                    graph.set_node_tag(
-                        coeff_node_name,
-                        std::to_string(coefficients[d - i][j]));
+                    graph.set_node_tag(coeff_node_name,
+                                       std::to_string(coefficients[d - i][j]));
 
                     if (i == d) {
                         graph.add_edge("s_" + std::to_string(2 * j),
@@ -201,11 +199,11 @@ Graph::create_haar_wavelet_transform_graph_from_signal(
                         graph.add_edge("s_" + std::to_string(2 * j + 1),
                                        coeff_node_name, 0);
                     } else {
-                        graph.add_edge("a^" + std::to_string(d - i - 1) + "_" +
-                                           std::to_string(2 * j),
+                        graph.add_edge("a^" + std::to_string(d - i - 1) + "_"
+                                           + std::to_string(2 * j),
                                        coeff_node_name, 0);
-                        graph.add_edge("a^" + std::to_string(d - i - 1) + "_" +
-                                           std::to_string(2 * j + 1),
+                        graph.add_edge("a^" + std::to_string(d - i - 1) + "_"
+                                           + std::to_string(2 * j + 1),
                                        coeff_node_name, 0);
                     }
                 }

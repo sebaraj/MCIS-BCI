@@ -79,12 +79,14 @@ TEST_F(DWTTest, DWTGraphFromSignalCorrectness) {
     Graph avg_graph = dwt_graphs[0];
     Graph coeff_graph = dwt_graphs[1];
 
-    // Check for final average value: ( ( (9+7)/sqrt(2) + (5+3)/sqrt(2) ) / sqrt(2) ) = 12
+    // Check for final average value: ( ( (9+7)/sqrt(2) + (5+3)/sqrt(2) ) /
+    // sqrt(2) ) = 12
     Node* final_avg_node = avg_graph.get_node("a^1_0");
     ASSERT_NE(final_avg_node, nullptr);
     EXPECT_NEAR(std::stod(final_avg_node->get_tag()), 12.0, 1e-9);
 
-    // Check for final coefficient value: ( ( (9+7)/sqrt(2) - (5+3)/sqrt(2) ) / sqrt(2) ) = 4
+    // Check for final coefficient value: ( ( (9+7)/sqrt(2) - (5+3)/sqrt(2) ) /
+    // sqrt(2) ) = 4
     Node* final_coeff_node = coeff_graph.get_node("d^1_0");
     ASSERT_NE(final_coeff_node, nullptr);
     EXPECT_NEAR(std::stod(final_coeff_node->get_tag()), 4.0, 1e-9);
@@ -107,7 +109,8 @@ TEST_F(DWTTest, DWTGraphPrunedAverage) {
     if (generate_diagrams) {
         int i = 0;
         for (const auto& g : dwt_graphs) {
-            g.generate_diagram_file("dwt_pruned_average_" + std::to_string(i++));
+            g.generate_diagram_file("dwt_pruned_average_"
+                                    + std::to_string(i++));
         }
     }
 }
@@ -124,7 +127,8 @@ TEST_F(DWTTest, DWTGraphPrunedCoefficient) {
     if (generate_diagrams) {
         int i = 0;
         for (const auto& g : dwt_graphs) {
-            g.generate_diagram_file("dwt_pruned_coefficient_" + std::to_string(i++));
+            g.generate_diagram_file("dwt_pruned_coefficient_"
+                                    + std::to_string(i++));
         }
     }
 }
@@ -132,8 +136,9 @@ TEST_F(DWTTest, DWTGraphPrunedCoefficient) {
 // Test 7: Verify the structure of the coefficient graph
 TEST_F(DWTTest, DWTGraphStructureCorrectness) {
     std::vector<double> signal = {9.0, 7.0, 5.0, 3.0};
-    auto dwt_graphs_expected = Graph::create_haar_wavelet_transform_graph_from_signal(
-        signal, HaarWaveletGraph::PRUNED_COEFFICIENT);
+    auto dwt_graphs_expected
+        = Graph::create_haar_wavelet_transform_graph_from_signal(
+            signal, HaarWaveletGraph::PRUNED_COEFFICIENT);
     ASSERT_TRUE(dwt_graphs_expected.has_value());
     auto dwt_graphs = dwt_graphs_expected.value();
     ASSERT_EQ(dwt_graphs.size(), 1);
