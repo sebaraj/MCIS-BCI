@@ -38,8 +38,10 @@ std::expected<Graph, mcis::GraphError> Graph::create_fft_graph_from_dimensions(
 
     for (int stage = 1; stage <= stages; ++stage) {
         for (int i = 0; i < n; ++i) {
-            graph.add_node("s" + std::to_string(stage) + "_"
-                           + std::to_string(i));
+            std::string node_name
+                = "s" + std::to_string(stage) + "_" + std::to_string(i);
+            graph.add_node(node_name);
+            graph.set_node_tag(node_name, "+/-*");
         }
     }
 

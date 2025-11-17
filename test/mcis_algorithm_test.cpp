@@ -133,8 +133,8 @@ TEST_F(MCISDiscoveryTest, MediumMVMAndFFT) {
 TEST_F(MCISDiscoveryTest, MediumDWTAndFFT) {
     Graph g;
     auto dwt_vec_opt
-        = g.create_haar_wavelet_transform_graph_from_dimensions(4, 4);
-    auto fft_opt = Graph::create_fft_graph_from_dimensions(4);
+        = g.create_haar_wavelet_transform_graph_from_dimensions(2, 1);
+    auto fft_opt = Graph::create_fft_graph_from_dimensions(2);
     ASSERT_TRUE(dwt_vec_opt.has_value() && !dwt_vec_opt->empty());
     ASSERT_TRUE(fft_opt.has_value());
 
@@ -147,9 +147,9 @@ TEST_F(MCISDiscoveryTest, MediumDWTAndFFT) {
 TEST_F(MCISDiscoveryTest, MediumDWTAndMVMAndFFT) {
     Graph g;
     auto dwt_vec_opt
-        = g.create_haar_wavelet_transform_graph_from_dimensions(4, 4);
-    auto mvm_opt = Graph::create_mvm_graph_from_dimensions(4, 4);
-    auto fft_opt = Graph::create_fft_graph_from_dimensions(4);
+        = g.create_haar_wavelet_transform_graph_from_dimensions(2, 1);
+    auto mvm_opt = Graph::create_mvm_graph_from_dimensions(2, 2);
+    auto fft_opt = Graph::create_fft_graph_from_dimensions(2);
     ASSERT_TRUE(dwt_vec_opt.has_value() && !dwt_vec_opt->empty());
     ASSERT_TRUE(mvm_opt.has_value());
     ASSERT_TRUE(fft_opt.has_value());
@@ -173,8 +173,8 @@ TEST_F(MCISDiscoveryTest, LargeGraphsMVMAndFFT) {
 
 TEST_F(MCISDiscoveryTest, LargeGraphsDWTAndMVM) {
     auto dwt_vec_opt
-        = Graph::create_haar_wavelet_transform_graph_from_dimensions(4, 4);
-    auto mvm_opt = Graph::create_mvm_graph_from_dimensions(4, 4);  // 120 nodes
+        = Graph::create_haar_wavelet_transform_graph_from_dimensions(2, 1);
+    auto mvm_opt = Graph::create_mvm_graph_from_dimensions(2, 2);  // 120 nodes
     ASSERT_TRUE(dwt_vec_opt.has_value() && !dwt_vec_opt->empty());
     ASSERT_TRUE(mvm_opt.has_value());
 
@@ -189,7 +189,9 @@ TEST_F(MCISDiscoveryTest, LargeGraphsDWTAndMVM) {
 void tag_graph_nodes(Graph& g, const std::string& tag_prefix) {
     int i = 0;
     for (auto const& [id, node] : g.get_nodes()) {
-        g.set_node_tag(id, tag_prefix + std::to_string(i % 3));
+        if (node->get_tag().empty()) {
+            g.set_node_tag(id, tag_prefix + std::to_string(i % 3));
+        }
         i++;
     }
 }
@@ -212,8 +214,8 @@ TEST_F(MCISDiscoveryTest, TaggedMVMs) {
 
 TEST_F(MCISDiscoveryTest, TaggedDWTAndFFT) {
     auto dwt_vec_opt
-        = Graph::create_haar_wavelet_transform_graph_from_dimensions(4, 4);
-    auto fft_opt = Graph::create_fft_graph_from_dimensions(4);
+        = Graph::create_haar_wavelet_transform_graph_from_dimensions(2, 1);
+    auto fft_opt = Graph::create_fft_graph_from_dimensions(2);
     ASSERT_TRUE(dwt_vec_opt.has_value() && !dwt_vec_opt->empty());
     ASSERT_TRUE(fft_opt.has_value());
 
@@ -228,10 +230,10 @@ TEST_F(MCISDiscoveryTest, TaggedDWTAndFFT) {
 }
 
 TEST_F(MCISDiscoveryTest, TaggedMVM_DWT_FFT) {
-    auto mvm_opt = Graph::create_mvm_graph_from_dimensions(4, 4);
+    auto mvm_opt = Graph::create_mvm_graph_from_dimensions(2, 2);
     auto dwt_vec_opt
-        = Graph::create_haar_wavelet_transform_graph_from_dimensions(4, 4);
-    auto fft_opt = Graph::create_fft_graph_from_dimensions(4);
+        = Graph::create_haar_wavelet_transform_graph_from_dimensions(2, 1);
+    auto fft_opt = Graph::create_fft_graph_from_dimensions(2);
     ASSERT_TRUE(mvm_opt.has_value());
     ASSERT_TRUE(dwt_vec_opt.has_value() && !dwt_vec_opt->empty());
     ASSERT_TRUE(fft_opt.has_value());

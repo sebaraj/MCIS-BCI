@@ -42,6 +42,7 @@ std::expected<Graph, mcis::GraphError> Graph::create_mvm_graph_from_mat_vec(
     for (int i = 1; i <= (m * n); ++i) {
         std::string product_node = "v^2_" + std::to_string(i);
         graph.add_node(product_node);
+        graph.set_node_tag(product_node, "*");
     }
 
     for (int depth = 3; depth <= n + 1; ++depth) {
@@ -49,6 +50,7 @@ std::expected<Graph, mcis::GraphError> Graph::create_mvm_graph_from_mat_vec(
             std::string acc_node
                 = "v^" + std::to_string(depth) + "_" + std::to_string(i);
             graph.add_node(acc_node);
+            graph.set_node_tag(acc_node, "+");
         }
     }
 

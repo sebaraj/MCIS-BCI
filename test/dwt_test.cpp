@@ -79,25 +79,23 @@ TEST_F(DWTTest, DWTGraphFromSignalCorrectness) {
     Graph avg_graph = dwt_graphs[0];
     Graph coeff_graph = dwt_graphs[1];
 
-    // Check for final average value: ( ( (9+7)/sqrt(2) + (5+3)/sqrt(2) ) / sqrt(2) ) = 12
-    bool final_avg_found = false;
-    for (const auto& [id, node] : avg_graph.get_nodes()) {
-        if (id.find("(12.0") != std::string::npos) {
-            final_avg_found = true;
-            break;
-        }
-    }
-    EXPECT_TRUE(final_avg_found) << "Final average node with value 12.0 not found.";
+    // Check for final average value: ( ( (9+7)/sqrt(2) + (5+3)/sqrt(2) ) /
+    // sqrt(2) ) = 12
+    Node* final_avg_node = avg_graph.get_node("a^1_0");
+    ASSERT_NE(final_avg_node, nullptr);
+    std::string avg_tag = final_avg_node->get_tag();
+    size_t avg_comma_pos = avg_tag.find(',');
+    ASSERT_NE(avg_comma_pos, std::string::npos);
+    EXPECT_NEAR(std::stod(avg_tag.substr(avg_comma_pos + 1)), 12.0, 1e-9);
 
-    // Check for final coefficient value: ( ( (9+7)/sqrt(2) - (5+3)/sqrt(2) ) / sqrt(2) ) = 4
-    bool final_coeff_found = false;
-    for (const auto& [id, node] : coeff_graph.get_nodes()) {
-        if (id.find("d^2_1 (4.0") != std::string::npos) {
-            final_coeff_found = true;
-            break;
-        }
-    }
-    EXPECT_TRUE(final_coeff_found) << "Final coefficient node with value 4.0 not found.";
+    // Check for final coefficient value: ( ( (9+7)/sqrt(2) - (5+3)/sqrt(2) ) /
+    // sqrt(2) ) = 4
+    Node* final_coeff_node = coeff_graph.get_node("d^1_0");
+    ASSERT_NE(final_coeff_node, nullptr);
+    std::string coeff_tag = final_coeff_node->get_tag();
+    size_t coeff_comma_pos = coeff_tag.find(',');
+    ASSERT_NE(coeff_comma_pos, std::string::npos);
+    EXPECT_NEAR(std::stod(coeff_tag.substr(coeff_comma_pos + 1)), 4.0, 1e-9);
 
     if (generate_diagrams) {
         avg_graph.generate_diagram_file("dwt_from_signal_avg_correctness");
@@ -117,7 +115,8 @@ TEST_F(DWTTest, DWTGraphPrunedAverage) {
     if (generate_diagrams) {
         int i = 0;
         for (const auto& g : dwt_graphs) {
-            g.generate_diagram_file("dwt_pruned_average_" + std::to_string(i++));
+            g.generate_diagram_file("dwt_pruned_average_"
+                                    + std::to_string(i++));
         }
     }
 }
@@ -134,7 +133,8 @@ TEST_F(DWTTest, DWTGraphPrunedCoefficient) {
     if (generate_diagrams) {
         int i = 0;
         for (const auto& g : dwt_graphs) {
-            g.generate_diagram_file("dwt_pruned_coefficient_" + std::to_string(i++));
+            g.generate_diagram_file("dwt_pruned_coefficient_"
+                                    + std::to_string(i++));
         }
     }
 }
@@ -142,33 +142,31 @@ TEST_F(DWTTest, DWTGraphPrunedCoefficient) {
 // Test 7: Verify the structure of the coefficient graph
 TEST_F(DWTTest, DWTGraphStructureCorrectness) {
     std::vector<double> signal = {9.0, 7.0, 5.0, 3.0};
-    auto dwt_graphs_expected = Graph::create_haar_wavelet_transform_graph_from_signal(
-        signal, HaarWaveletGraph::PRUNED_COEFFICIENT);
+    auto dwt_graphs_expected
+        = Graph::create_haar_wavelet_transform_graph_from_signal(
+            signal, HaarWaveletGraph::PRUNED_COEFFICIENT);
     ASSERT_TRUE(dwt_graphs_expected.has_value());
     auto dwt_graphs = dwt_graphs_expected.value();
     ASSERT_EQ(dwt_graphs.size(), 1);
 
     Graph coeff_graph = dwt_graphs[0];
 
-    Node* d_node = nullptr;
-    for (const auto& [id, node] : coeff_graph.get_nodes()) {
-        if (id.rfind("d^", 0) == 0) { // if node name starts with d^
-            d_node = node;
-            break;
-        }
-    }
-
+    Node* d_node = coeff_graph.get_node("d^0_0");
     ASSERT_NE(d_node, nullptr) << "No coefficient node found in the graph.";
 
     const auto& parents = d_node->get_parents();
-    EXPECT_FALSE(parents.empty()) << "Coefficient node should have parents.";
+    EXPECT_EQ(parents.size(), 2) << "Coefficient node should have two parents.";
 
-    bool parent_is_a_node = false;
+    bool s0_parent_found = false;
+    bool s1_parent_found = false;
     for (const auto& parent : parents) {
-        if (parent.first->get_id().rfind("a^", 0) == 0) { // if parent name starts with a^
-            parent_is_a_node = true;
-            break;
+        if (parent.first->get_id() == "s_0") {
+            s0_parent_found = true;
+        }
+        if (parent.first->get_id() == "s_1") {
+            s1_parent_found = true;
         }
     }
-    EXPECT_TRUE(parent_is_a_node) << "Coefficient node parent must be an average node.";
+    EXPECT_TRUE(s0_parent_found) << "s_0 parent not found for d^0_0";
+    EXPECT_TRUE(s1_parent_found) << "s_1 parent not found for d^0_0";
 }
