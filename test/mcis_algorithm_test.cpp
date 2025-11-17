@@ -189,7 +189,9 @@ TEST_F(MCISDiscoveryTest, LargeGraphsDWTAndMVM) {
 void tag_graph_nodes(Graph& g, const std::string& tag_prefix) {
     int i = 0;
     for (auto const& [id, node] : g.get_nodes()) {
-        g.set_node_tag(id, tag_prefix + std::to_string(i % 3));
+        if (node->get_tag().empty()) {
+            g.set_node_tag(id, tag_prefix + std::to_string(i % 3));
+        }
         i++;
     }
 }

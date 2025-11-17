@@ -83,13 +83,19 @@ TEST_F(DWTTest, DWTGraphFromSignalCorrectness) {
     // sqrt(2) ) = 12
     Node* final_avg_node = avg_graph.get_node("a^1_0");
     ASSERT_NE(final_avg_node, nullptr);
-    EXPECT_NEAR(std::stod(final_avg_node->get_tag()), 12.0, 1e-9);
+    std::string avg_tag = final_avg_node->get_tag();
+    size_t avg_comma_pos = avg_tag.find(',');
+    ASSERT_NE(avg_comma_pos, std::string::npos);
+    EXPECT_NEAR(std::stod(avg_tag.substr(avg_comma_pos + 1)), 12.0, 1e-9);
 
     // Check for final coefficient value: ( ( (9+7)/sqrt(2) - (5+3)/sqrt(2) ) /
     // sqrt(2) ) = 4
     Node* final_coeff_node = coeff_graph.get_node("d^1_0");
     ASSERT_NE(final_coeff_node, nullptr);
-    EXPECT_NEAR(std::stod(final_coeff_node->get_tag()), 4.0, 1e-9);
+    std::string coeff_tag = final_coeff_node->get_tag();
+    size_t coeff_comma_pos = coeff_tag.find(',');
+    ASSERT_NE(coeff_comma_pos, std::string::npos);
+    EXPECT_NEAR(std::stod(coeff_tag.substr(coeff_comma_pos + 1)), 4.0, 1e-9);
 
     if (generate_diagrams) {
         avg_graph.generate_diagram_file("dwt_from_signal_avg_correctness");

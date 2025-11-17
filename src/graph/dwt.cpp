@@ -41,6 +41,7 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
                 std::string avg_node_name
                     = "a^" + std::to_string(d - i) + "_" + std::to_string(j);
                 pruned_avg_graph.add_node(avg_node_name);
+                pruned_avg_graph.set_node_tag(avg_node_name, "+/sqrt(2)");
                 if (i == d) {
                     pruned_avg_graph.add_edge("s_" + std::to_string(2 * j),
                                               avg_node_name, 0);
@@ -69,6 +70,7 @@ Graph::create_haar_wavelet_transform_graph_from_dimensions(
                 std::string coeff_node_name
                     = "d^" + std::to_string(d - i) + "_" + std::to_string(j);
                 pruned_coeff_graph.add_node(coeff_node_name);
+                pruned_coeff_graph.set_node_tag(coeff_node_name, "-/sqrt(2)");
                 if (i == d) {
                     pruned_coeff_graph.add_edge("s_" + std::to_string(2 * j),
                                                 coeff_node_name, 0);
@@ -165,8 +167,9 @@ Graph::create_haar_wavelet_transform_graph_from_signal(
                 std::string avg_node_name
                     = "a^" + std::to_string(d - i) + "_" + std::to_string(j);
                 graph.add_node(avg_node_name);
-                graph.set_node_tag(avg_node_name,
-                                   std::to_string(averages[d - i][j]));
+                graph.set_node_tag(
+                    avg_node_name,
+                    "+/sqrt(2)," + std::to_string(averages[d - i][j]));
 
                 if (i == d) {
                     graph.add_edge("s_" + std::to_string(2 * j), avg_node_name,
@@ -190,8 +193,9 @@ Graph::create_haar_wavelet_transform_graph_from_signal(
                     std::string coeff_node_name = "d^" + std::to_string(d - i)
                                                   + "_" + std::to_string(j);
                     graph.add_node(coeff_node_name);
-                    graph.set_node_tag(coeff_node_name,
-                                       std::to_string(coefficients[d - i][j]));
+                    graph.set_node_tag(
+                        coeff_node_name,
+                        "-/sqrt(2)," + std::to_string(coefficients[d - i][j]));
 
                     if (i == d) {
                         graph.add_edge("s_" + std::to_string(2 * j),

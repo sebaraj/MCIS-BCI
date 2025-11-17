@@ -420,7 +420,7 @@ void Graph::generate_diagram_file(const std::string& graph_name) const {
                            << "</SUB><SUP>"
                            << node_id.substr(super_pos + 1,
                                              sub_pos - super_pos - 1)
-                           << "</SUP>>];\n";
+                           << "</SUP>(" << node->get_tag() << ")>];\n";
             }
             for (const auto& [child, weight] : node->get_children()) {
                 outputFile << "    " << std::quoted(node->get_id()) << " -> "
